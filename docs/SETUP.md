@@ -24,6 +24,9 @@ Todo en la nube: GitHub (código), Supabase (base de datos) y Codex en la cuenta
    - La clave **service_role** (secreta; empieza con `eyJ...` o `sb_secret_...`). **No la compartas ni la
      pegues en el repo.**
 
+6. Después, de la misma forma, corré `sql/dashboard.sql` (cambiando la contraseña adentro, ver
+   `docs/DASHBOARD.md`) y `sql/reportes.sql` (reportes personalizados de Manuel).
+
 ## 3. Poner la URL en el repo
 
 En GitHub, editá `config.json` (lápiz ✏️) y poné la Project URL:

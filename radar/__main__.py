@@ -10,6 +10,11 @@
   probar-fuente ID          Descubre URLs y extrae 5 avisos de muestra (no guarda nada)
   param CLAVE VALOR         Cambia un parámetro (ej.: tipo_cambio_usd_uyu 40.2)
   alias TEXTO BARRIO DEPTO  Enseña un nombre de barrio nuevo (ej.: alias "Pocitos Nuevo" Pocitos Montevideo)
+  consulta "SELECT ..."     Prueba una consulta de solo lectura sobre las vistas dash_*
+  reporte-guardar ID --nombre ... --sql ...   Guarda un reporte personalizado (diario o --semanal)
+  reporte-pausar ID [--activar]   Pausa (o reactiva) un reporte personalizado
+  reportes                  Lista los reportes personalizados
+  reportes-correr           Corre los reportes personalizados de hoy
   salud                     Últimas corridas por fuente y barrios sin mapear
 """
 from __future__ import annotations
@@ -24,7 +29,7 @@ from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from . import adapters, dedupe, discover, extract, report, scrape
+from . import adapters, dedupe, discover, extract, personalizados, report, scrape
 from .http import Cliente
 from .store import ROOT, abrir
 
@@ -114,10 +119,44 @@ def cmd_reporte(store, a):
 
 
 def cmd_diaria(store, a):
-    print("== 1/4 scraping"); cmd_correr(store, a)
-    print("\n== 2/4 misma propiedad entre fuentes"); cmd_dedupe(store, a)
-    print("\n== 3/4 estadísticas"); cmd_estadisticas(store, a)
-    print("\n== 4/4 reporte\n"); cmd_reporte(store, a)
+    print("== 1/5 scraping"); cmd_correr(store, a)
+    print("\n== 2/5 misma propiedad entre fuentes"); cmd_dedupe(store, a)
+    print("\n== 3/5 estadísticas"); cmd_estadisticas(store, a)
+    print("\n== 4/5 reporte\n"); cmd_reporte(store, a)
+    print("\n== 5/5 reportes personalizados\n"); cmd_reportes_correr(store, a)
+
+
+def cmd_consulta(store, a):
+    filas = personalizados.probar(store, a.sql)
+    print(f"{len(filas)} fila(s)\n")
+    print(personalizados.tabla_md(filas, max_filas=a.n))
+
+
+def cmd_reporte_guardar(store, a):
+    n = personalizados.guardar(store, a.id, a.nombre, a.descripcion or "", a.sql,
+                               "semanal" if a.semanal else "diaria", not a.siempre)
+    print(f"Guardado '{a.id}' ({'semanal, los lunes' if a.semanal else 'diario'}). Hoy da {n} fila(s).")
+
+
+def cmd_reporte_pausar(store, a):
+    r = [x for x in store.select("reportes_guardados") if x["id"] == a.id]
+    if not r:
+        sys.exit(f"No existe el reporte {a.id}")
+    store.upsert("reportes_guardados", [{**r[0], "activo": a.activar}])
+    print(f"{a.id}: {'activo' if a.activar else 'pausado'}")
+
+
+def cmd_reportes_listar(store, a):
+    for r in sorted(store.select("reportes_guardados"), key=lambda r: r["id"]):
+        print(f"{'✔' if r.get('activo') else '⏸'} {r['id']:<32} {r.get('frecuencia'):<8} filas={r.get('ultimas_filas')} "
+              f"{'ERROR: ' + r['ultimo_error'] if r.get('ultimo_error') else ''}\n    {r['nombre']} — {r.get('descripcion') or ''}")
+
+
+def cmd_reportes_correr(store, a):
+    try:
+        print(personalizados.correr_todos(store, hoy()) or "(no hay reportes personalizados guardados)")
+    except Exception as e:  # noqa: BLE001
+        print(f"(no se pudieron correr los reportes personalizados: {e})")
 
 
 def cmd_probar_url(store, a):
@@ -214,11 +253,20 @@ def main(argv=None):
     s = sub.add_parser("alias"); s.add_argument("texto"); s.add_argument("barrio"); s.add_argument("departamento")
     s.add_argument("--tipo", default="zona")
     s = sub.add_parser("salud"); s.add_argument("--desde")
+    s = sub.add_parser("consulta"); s.add_argument("sql"); s.add_argument("-n", type=int, default=30)
+    s = sub.add_parser("reporte-guardar"); s.add_argument("id"); s.add_argument("--nombre", required=True)
+    s.add_argument("--descripcion"); s.add_argument("--sql", required=True)
+    s.add_argument("--semanal", action="store_true", help="correr solo los lunes")
+    s.add_argument("--siempre", action="store_true", help="mostrarlo aunque dé 0 filas")
+    s = sub.add_parser("reporte-pausar"); s.add_argument("id"); s.add_argument("--activar", action="store_true")
+    sub.add_parser("reportes"); sub.add_parser("reportes-correr")
     a = p.parse_args(argv)
     store = abrir()
     {"seed": cmd_seed, "correr": cmd_correr, "diaria": cmd_diaria, "dedupe": cmd_dedupe,
      "estadisticas": cmd_estadisticas, "reporte": cmd_reporte, "probar-url": cmd_probar_url,
-     "probar-fuente": cmd_probar_fuente, "param": cmd_param, "alias": cmd_alias, "salud": cmd_salud}[a.cmd](store, a)
+     "probar-fuente": cmd_probar_fuente, "param": cmd_param, "alias": cmd_alias,
+     "consulta": cmd_consulta, "reporte-guardar": cmd_reporte_guardar, "reporte-pausar": cmd_reporte_pausar,
+     "reportes": cmd_reportes_listar, "reportes-correr": cmd_reportes_correr, "salud": cmd_salud}[a.cmd](store, a)
 
 
 if __name__ == "__main__":

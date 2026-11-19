@@ -36,6 +36,10 @@ probar-url URL [--fuente ID] muestra qué se extrae de un aviso (no guarda)
 salud [--desde AAAA-MM-DD]   corridas recientes y barrios sin mapear
 alias TEXTO BARRIO DEPTO     enseña un nombre de barrio nuevo (efecto inmediato en la base)
 param CLAVE VALOR            cambia un parámetro (ej. tipo_cambio_usd_uyu)
+consulta "SELECT ..."        prueba una consulta de solo lectura (vistas dash_*)
+reporte-guardar ID --nombre "..." --descripcion "..." --sql "..." [--semanal] [--siempre]
+reporte-pausar ID [--activar]
+reportes                     lista los reportes personalizados de Manuel
 ```
 
 ---
@@ -88,8 +92,53 @@ Seguí estos pasos en orden. Si un paso falla, anotalo y seguí con el resto: **
 - **"¿Qué pasó en Pocitos este mes?"** → consultá la base (tablas `eventos`, `avisos`, `estadisticas_diarias`,
   vistas `v_eventos_detalle`, `v_propiedades_multifuente`, `v_stock_inmobiliaria`) y respondé con números y links.
   Podés escribir un script corto en `scripts/` si lo necesitás.
+- **"Quiero que todos los días me muestres X" / "armame una búsqueda de Y"** → es un **reporte personalizado**.
+  Ver sección 2.1.
 - **"Esta propiedad, ¿dónde más está publicada?"** → buscá su `propiedad_id` y listá todas las fuentes con precio.
 - **"El barrio X está mal"** → corregí el alias (comando `alias` + CSV).
+
+### 2.1 Reportes y búsquedas personalizadas
+
+Manuel puede pedir cosas como "avisame cada día de aptos de 2 dormitorios en Pocitos que bajen de precio",
+"los lunes, ranking de inmobiliarias por cantidad de bajas en la semana", "casas en Carrasco bajo USD 400.000
+publicadas hoy". Procedimiento:
+
+1. Traducí el pedido a **un** `SELECT` (o `WITH ... SELECT`) sobre las vistas `dash_*` (columnas abajo).
+   Usá `current_date` para "hoy" y `current_date - 7` para "esta semana". Incluí la columna `url` cuando
+   sean avisos (el reporte la convierte en link) y ordená por lo más relevante. Máximo 500 filas.
+2. Probala: `python -m radar consulta "<sql>"`. Mostrale a Manuel qué devuelve **hoy** y explicale en una
+   línea qué va a recibir cada día. Si el pedido es ambiguo (¿precio en USD?, ¿qué barrios?), preguntá.
+3. Cuando Manuel diga que sí: `python -m radar reporte-guardar <id-corto> --nombre "<título>"
+   --descripcion "<el pedido en sus palabras>" --sql "<sql>"` (`--semanal` si lo quiere los lunes;
+   `--siempre` si quiere verlo aunque dé 0 resultados). Desde mañana sale en "## Tus reportes".
+4. Para cambiarlo, volvé a guardarlo con el mismo id. Para sacarlo: `reporte-pausar <id>`. Nunca borres.
+
+Si el pedido necesita un dato que **no existe** en la base (ej. "con piscina", "con vista al mar"), decíselo:
+hay que extraerlo del aviso (cambio de código en `extract.py`/adapters → PR). Proponé el cambio y, mientras
+tanto, una aproximación (ej. buscar "piscina" en `titulo`).
+
+**Vistas disponibles** (solo lectura):
+- `dash_avisos_activos`: id, fuente, tipo_fuente, inmobiliaria, operacion (venta/alquiler/alquiler_temporal),
+  tipo (apartamento/casa/terreno/local/oficina/...), departamento, barrio, dormitorios, banos, m2_edificados,
+  precio, moneda, precio_usd, usd_m2, lat, lon, ubicacion, primera_vez, dias_publicado,
+  publicada_en_varios_lugares, titulo, url
+- `dash_eventos`: fecha, semana, evento ('Publicado','Desapareció','Subió precio','Bajó precio','Reapareció'),
+  precio_usd_anterior, precio_usd_nuevo, variacion_pct, fuente, inmobiliaria, operacion, tipo, departamento,
+  barrio, dormitorios, m2_edificados, precio_usd, titulo, url
+- `dash_evolucion_barrio`: fecha, departamento, barrio, operacion, tipo, avisos_activos, mediana_usd,
+  mediana_usd_m2, altas, bajas, subas_precio, bajas_precio
+- `dash_misma_propiedad`: propiedad_id, inmobiliaria, fuente, operacion, tipo, departamento, barrio,
+  dormitorios, m2_edificados, precio_usd, estado, precio_min_usd, precio_max_usd, url
+- `dash_corridas`: fecha, fuente, estado, urls_revisadas, avisos_ok, nuevos, bajas, cambios_precio, errores, notas
+
+Ejemplo:
+```
+python -m radar reporte-guardar aptos-2d-pocitos-bajan --nombre "Aptos 2 dorm. en Pocitos que bajaron" \
+  --descripcion "Apartamentos de 2 dormitorios en venta en Pocitos que bajaron de precio hoy" \
+  --sql "select inmobiliaria, precio_usd_anterior, precio_usd_nuevo, variacion_pct, m2_edificados, url
+         from dash_eventos where fecha = current_date and evento = 'Bajó precio' and barrio = 'Pocitos'
+         and tipo = 'apartamento' and operacion = 'venta' and dormitorios = 2 order by variacion_pct"
+```
 
 ---
 
@@ -104,6 +153,8 @@ Empezá con lo importante, en lenguaje humano. Después las tablas del reporte. 
 - <3 a 6 bullets interpretando los datos: qué inmobiliarias se movieron, zonas con subas/bajas de precio
   en varias inmobiliarias a la vez, propiedades que desaparecieron de todas las fuentes, diferencias de precio
   grandes de la misma propiedad entre portales. Cada bullet con números concretos.>
+
+<pegá acá "## Tus reportes" (los reportes personalizados de Manuel), si hay>
 
 <pegá acá el reporte Markdown que imprimió `python -m radar diaria` (desde "## Movimiento por inmobiliaria"),
  con las tablas tal cual: el mensaje ES el reporte, Manuel lo lee en ChatGPT>

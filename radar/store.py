@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sqlite3
 from pathlib import Path
 from typing import Any, Iterable
@@ -38,11 +39,14 @@ TABLAS: dict[str, list[str]] = {
                  "nuevos", "bajas", "cambios_precio", "errores", "estado", "notas"],
     "estadisticas_diarias": ["fecha", "departamento", "barrio", "operacion", "tipo", "avisos_activos",
                              "mediana_usd", "mediana_usd_m2", "altas", "bajas", "subas_precio", "bajas_precio"],
+    "reportes_guardados": ["id", "nombre", "descripcion", "sql", "frecuencia", "solo_si_hay_resultados", "activo",
+                           "pedido_por", "ultima_ejecucion", "ultimas_filas", "ultimo_error"],
 }
 CLAVES: dict[str, list[str]] = {
     "inmobiliarias": ["id"], "fuentes": ["id"], "barrios_alias": ["alias", "departamento"],
     "barrios_sin_mapear": ["texto", "departamento"], "parametros": ["clave"], "avisos": ["id"],
     "estadisticas_diarias": ["fecha", "departamento", "barrio", "operacion", "tipo"],
+    "reportes_guardados": ["id"],
 }
 JSON_COLS = {"avisos": {"imagenes"}, "inmobiliarias": {"alias"}}
 
@@ -60,6 +64,9 @@ class Store:
     def subir_archivo(self, ruta: str, contenido: bytes, content_type: str = "application/gzip") -> None: ...
     def link_firmado(self, ruta: str, dias: int = 7) -> str | None:
         return None
+    def consulta(self, sql: str) -> list[dict]:
+        """Corre un SELECT de solo lectura y devuelve filas (máx. 500)."""
+        ...
 
     # helpers comunes
     def param(self, clave: str, default: str | None = None) -> str | None:
@@ -128,6 +135,12 @@ class SupabaseStore(Store):
         _check(r)
 
 
+    def consulta(self, sql):
+        # GET => la API de Supabase lo corre en una transacción de solo lectura
+        r = self.http.get(f"{self.url}/rest/v1/rpc/radar_consulta", params={"q": sql})
+        _check(r)
+        return r.json() or []
+
     def link_firmado(self, ruta, dias=7):
         bucket = os.environ.get("SUPABASE_BUCKET", "scrapeos")
         r = self.http.post(f"{self.url}/storage/v1/object/sign/{bucket}/{ruta}",
@@ -176,7 +189,7 @@ class LocalStore(Store):
             for c in JSON_COLS.get(tabla, set()) & d.keys():
                 if isinstance(d[c], str):
                     d[c] = json.loads(d[c])
-            for c in ("activa", "garaje", "sitemap_completo"):
+            for c in ("activa", "garaje", "sitemap_completo", "activo", "solo_si_hay_resultados"):
                 if c in d and d[c] is not None:
                     d[c] = bool(d[c])
             out.append(d)
@@ -198,6 +211,14 @@ class LocalStore(Store):
 
     def link_firmado(self, ruta, dias=7):
         return (self.archivos / ruta).as_uri()
+
+    def consulta(self, sql):
+        q = sql.strip().rstrip(";")
+        if not re.match(r"(?is)^\s*(select|with)\b", q):
+            raise RuntimeError("solo se aceptan SELECT/WITH")
+        cur = self.db.execute(f"select * from ({q}) limit 500")
+        cols = [c[0] for c in cur.description]
+        return [dict(zip(cols, row)) for row in cur.fetchall()]
 
     def subir_archivo(self, ruta, contenido, content_type="application/gzip"):
         p = self.archivos / ruta
