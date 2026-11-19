@@ -34,8 +34,8 @@ reporte diario).
       como secretos). Su robots.txt bloquea agentes de IA, así que no se scrapea el sitio.
 
 ## Fase 3 — Producto para Manuel (mes 2)
-- [ ] Dashboard en **Looker Studio** conectado a Supabase (Postgres): evolución USD/m² por barrio, stock por
-      inmobiliaria, altas/bajas por semana, mapa con coordenadas.
+- [x] Vistas `dash_*` y usuario de solo lectura para el dashboard (`sql/dashboard.sql`).
+- [ ] Armar el tablero en **Looker Studio** siguiendo `docs/DASHBOARD.md`.
 - [ ] Alertas personalizadas: barrios/tipologías que le interesan a Manuel arriba de todo en el mensaje.
 - [ ] Resumen semanal (lunes) además del diario.
 - [ ] Historial de precios por propiedad (Gallito expone `priceHistory` en sus datos; aprovecharlo).

@@ -7,6 +7,7 @@ varios lugares con precios distintos) y manda un resumen con las tendencias por 
 - **Cómo instalarlo:** [docs/SETUP.md](docs/SETUP.md)
 - **Qué hace el agente cada día:** [AGENTS.md](AGENTS.md)
 - **Sumar una inmobiliaria o portal:** [docs/NUEVA_FUENTE.md](docs/NUEVA_FUENTE.md)
+- **Dashboard (Looker Studio):** [docs/DASHBOARD.md](docs/DASHBOARD.md)
 - **Qué falta construir:** [ROADMAP.md](ROADMAP.md)
 
 ## Cómo está armado
