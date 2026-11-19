@@ -15,6 +15,7 @@
   reporte-pausar ID [--activar]   Pausa (o reactiva) un reporte personalizado
   reportes                  Lista los reportes personalizados
   reportes-correr           Corre los reportes personalizados de hoy
+  tipo-cambio               Actualiza el dólar desde una API pública (si falla, deja el anterior)
   salud                     Últimas corridas por fuente y barrios sin mapear
 """
 from __future__ import annotations
@@ -116,14 +117,47 @@ def cmd_reporte(store, a):
     except Exception as e:  # noqa: BLE001
         print(f"(no se pudo subir el reporte a Storage: {e})", file=sys.stderr)
     print(md)
+    return md
+
+
+def _salud_md(store) -> str:
+    corr = store.select("corridas", eq={"fecha": hoy().isoformat()})
+    lineas = [f"- {c['fuente_id']}: {c.get('estado')} — revisadas {c.get('urls_revisadas') or 0}, "
+              f"ok {c.get('avisos_ok') or 0}, errores {c.get('errores') or 0}. {c.get('notas') or ''}".strip()
+              for c in sorted(corr, key=lambda c: c["fuente_id"])]
+    sm = sorted(store.select("barrios_sin_mapear"), key=lambda r: -int(r.get("veces") or 0))[:10]
+    if sm:
+        lineas.append("- Barrios sin mapear: " + "; ".join(f"{r['texto']} (×{r['veces']})" for r in sm))
+    lineas.append(f"- Tipo de cambio usado: {store.param('tipo_cambio_usd_uyu', '?')} UYU por USD")
+    return "\n".join(lineas) or "- (sin corridas hoy)"
 
 
 def cmd_diaria(store, a):
     print("== 1/5 scraping"); cmd_correr(store, a)
     print("\n== 2/5 misma propiedad entre fuentes"); cmd_dedupe(store, a)
     print("\n== 3/5 estadísticas"); cmd_estadisticas(store, a)
-    print("\n== 4/5 reporte\n"); cmd_reporte(store, a)
-    print("\n== 5/5 reportes personalizados\n"); cmd_reportes_correr(store, a)
+    print("\n== 4/5 reporte\n"); md = cmd_reporte(store, a)
+    print("\n== 5/5 reportes personalizados\n"); pers = cmd_reportes_correr(store, a)
+    # Queda guardado en la base: la tarea de ChatGPT lo lee de acá con el conector de Supabase.
+    salud = _salud_md(store)
+    store.upsert("reportes_diarios", [{"fecha": hoy().isoformat(), "reporte_md": md, "personalizados_md": pers or "",
+                                       "salud_md": salud, "generado_en": datetime.now(TZ).isoformat()}])
+    print("\n== salud\n" + salud)
+    print("\nReporte guardado en la tabla reportes_diarios.")
+
+
+def cmd_tipo_cambio(store, a):
+    """Actualiza el dólar (USD->UYU) desde una API pública. Si falla, deja el valor anterior."""
+    import httpx
+    try:
+        r = httpx.get("https://open.er-api.com/v6/latest/USD", timeout=20).json()
+        tc = float(r["rates"]["UYU"])
+        if not 20 < tc < 80:
+            raise ValueError(f"valor raro: {tc}")
+        store.set_param("tipo_cambio_usd_uyu", f"{tc:.3f}")
+        print(f"tipo de cambio: {tc:.3f} UYU por USD")
+    except Exception as e:  # noqa: BLE001
+        print(f"(no se pudo actualizar el tipo de cambio, queda {store.param('tipo_cambio_usd_uyu')}: {e})")
 
 
 def cmd_consulta(store, a):
@@ -154,9 +188,12 @@ def cmd_reportes_listar(store, a):
 
 def cmd_reportes_correr(store, a):
     try:
-        print(personalizados.correr_todos(store, hoy()) or "(no hay reportes personalizados guardados)")
+        md = personalizados.correr_todos(store, hoy())
     except Exception as e:  # noqa: BLE001
+        md = ""
         print(f"(no se pudieron correr los reportes personalizados: {e})")
+    print(md or "(no hay reportes personalizados guardados)")
+    return md
 
 
 def cmd_probar_url(store, a):
@@ -259,14 +296,14 @@ def main(argv=None):
     s.add_argument("--semanal", action="store_true", help="correr solo los lunes")
     s.add_argument("--siempre", action="store_true", help="mostrarlo aunque dé 0 filas")
     s = sub.add_parser("reporte-pausar"); s.add_argument("id"); s.add_argument("--activar", action="store_true")
-    sub.add_parser("reportes"); sub.add_parser("reportes-correr")
+    sub.add_parser("reportes"); sub.add_parser("reportes-correr"); sub.add_parser("tipo-cambio")
     a = p.parse_args(argv)
     store = abrir()
     {"seed": cmd_seed, "correr": cmd_correr, "diaria": cmd_diaria, "dedupe": cmd_dedupe,
      "estadisticas": cmd_estadisticas, "reporte": cmd_reporte, "probar-url": cmd_probar_url,
      "probar-fuente": cmd_probar_fuente, "param": cmd_param, "alias": cmd_alias,
      "consulta": cmd_consulta, "reporte-guardar": cmd_reporte_guardar, "reporte-pausar": cmd_reporte_pausar,
-     "reportes": cmd_reportes_listar, "reportes-correr": cmd_reportes_correr, "salud": cmd_salud}[a.cmd](store, a)
+     "reportes": cmd_reportes_listar, "reportes-correr": cmd_reportes_correr, "tipo-cambio": cmd_tipo_cambio, "salud": cmd_salud}[a.cmd](store, a)
 
 
 if __name__ == "__main__":

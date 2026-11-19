@@ -1,0 +1,62 @@
+name: Radar diario
+
+# Corre todos los días a las 06:00 de Uruguay (09:00 UTC) en la nube de GitHub.
+# También se puede correr a mano: pestaña Actions > Radar diario > Run workflow.
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+    inputs:
+      max_urls:
+        description: "Tope de avisos por fuente (vacío = el de cada fuente)"
+        required: false
+        default: ""
+
+concurrency:
+  group: radar-diario
+  cancel-in-progress: false
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      RADAR_MINUTOS: "50"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Chequear la clave de Supabase
+        run: |
+          if [ -z "$SUPABASE_SERVICE_KEY" ]; then
+            echo "::error::Falta el secreto SUPABASE_SERVICE_KEY (Settings > Secrets and variables > Actions)"
+            exit 1
+          fi
+
+      - name: Sincronizar configuración
+        run: python -m radar seed
+
+      - name: Tipo de cambio
+        run: python -m radar tipo-cambio
+
+      - name: Rutina diaria
+        run: |
+          if [ -n "${{ inputs.max_urls }}" ]; then
+            python -m radar diaria --max-urls "${{ inputs.max_urls }}" | tee salida.txt
+          else
+            python -m radar diaria | tee salida.txt
+          fi
+
+      - name: Resumen en GitHub
+        if: always()
+        run: |
+          cat reportes/*.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+          python -m radar salud >> "$GITHUB_STEP_SUMMARY" 2>&1 || true

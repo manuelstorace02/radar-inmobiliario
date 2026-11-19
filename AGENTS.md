@@ -44,31 +44,29 @@ reportes                     lista los reportes personalizados de Manuel
 
 ---
 
-## 1. Rutina diaria (cuando te lo pide la tarea programada)
+## 1. Cómo corre todos los días
 
-Seguí estos pasos en orden. Si un paso falla, anotalo y seguí con el resto: **el reporte tiene que salir igual**.
+La corrida diaria **no la hacés vos**: la hace **GitHub Actions** (`.github/workflows/radar-diario.yml`) a las
+06:00 de Uruguay, con la clave de Supabase guardada como secreto del repo. Hace: `seed` → `tipo-cambio` →
+`diaria` (scraping, misma propiedad, estadísticas, reporte y reportes personalizados) y guarda el resultado en la
+tabla **`reportes_diarios`** (`reporte_md`, `personalizados_md`, `salud_md`). El log queda en la pestaña
+Actions del repo.
 
-0. **Código al día.** Asegurate de estar en la última versión de `main` (`git fetch origin && git checkout main &&
-   git reset --hard origin/main` si la copia local está vieja o incompleta, por ejemplo si solo ves `README.md`).
-1. **Dependencias.** Si `python -c "import httpx, bs4, lxml"` falla: el `pip` del sistema en este entorno no
-   funciona, así que usá un entorno virtual:
-   `python3 -m venv /tmp/radar-venv && /tmp/radar-venv/bin/pip install -q -r requirements.txt`
-   y de ahí en adelante corré todo con `/tmp/radar-venv/bin/python -m radar ...`.
-2. **Sincronizar configuración:** `python -m radar seed`.
-3. **Tipo de cambio.** Buscá la cotización del dólar interbancario del día (BCU, o en su defecto una fuente
-   confiable de Uruguay) y cargala: `python -m radar param tipo_cambio_usd_uyu <valor>`. Si no la conseguís,
-   dejá la anterior y mencionalo en las notas técnicas.
-4. **Correr la rutina:** `python -m radar diaria`. Puede tardar (las fuentes corren en paralelo, cada una con un
-   tope de tiempo, `--minutos`, por defecto 40). Guardá la salida completa: el final es el reporte en Markdown.
-5. **Revisar salud** (`python -m radar salud`):
-   - Fuente `sospechosa` o `fallida`: diagnosticá con `probar-fuente`. Si es un cambio de HTML/sitemap y el
-     arreglo es claro, arreglá el adapter (ver `docs/NUEVA_FUENTE.md`) y dejalo en un PR. Si el sitio te bloquea
-     (403/429 sostenido, captcha), **no intentes esquivarlo**: anotalo y proponé bajar la frecuencia.
-   - **Barrios sin mapear** que aparezcan 3+ veces: si es obvio a qué barrio corresponde, enseñalo con
-     `python -m radar alias "<texto>" "<Barrio>" "<Departamento>"` y agregá la misma fila a
-     `data/seed/barrios.csv` (en el PR del día). Si no es obvio, no lo inventes: dejalo listado.
-6. **Respuesta final = el mensaje para Manuel** (formato en la sección 3).
-7. Si cambiaste código o CSVs, abrí **un solo PR** con todo y decí en las notas técnicas qué hay que aprobar.
+A las 07:30 una **tarea programada de ChatGPT** lee esa fila con el conector de Supabase (solo lectura) y le
+escribe a Manuel el mensaje del día (formato en la sección 3).
+
+### Si estás en Codex (chat de trabajo) y te piden revisar o correr algo a mano
+0. **Código al día:** `git fetch origin && git checkout main && git reset --hard origin/main` si la copia está vieja.
+1. **Dependencias:** el `pip` del sistema no funciona en este entorno; usá
+   `python3 -m venv /tmp/radar-venv && /tmp/radar-venv/bin/pip install -q -r requirements.txt` y corré todo con
+   `/tmp/radar-venv/bin/python -m radar ...`.
+2. **Salud:** `python -m radar salud`. Fuente `sospechosa`/`fallida` → diagnosticá con `probar-fuente`; si es
+   un cambio de HTML/sitemap y el arreglo es claro, arreglá el adapter (ver `docs/NUEVA_FUENTE.md`) en un PR.
+   Si el sitio bloquea (403/429 sostenido, captcha), **no intentes esquivarlo**: anotalo.
+3. **Barrios sin mapear** que aparezcan 3+ veces: si es obvio, `python -m radar alias "<texto>" "<Barrio>"
+   "<Departamento>"` + la misma fila en `data/seed/barrios.csv` (PR). Si no es obvio, no lo inventes.
+4. Correr la rutina a mano (raro): `python -m radar diaria --max-urls 300 --minutos 10`.
+5. Si cambiaste código o CSVs, **un solo PR** con todo y explicá qué hay que aprobar.
 
 ### Reglas que no se rompen
 - **Los números salen de la base, nunca de tu cabeza.** No completes datos que el reporte no trae.
@@ -144,7 +142,8 @@ python -m radar reporte-guardar aptos-2d-pocitos-bajan --nombre "Aptos 2 dorm. e
 
 ## 3. Formato del mensaje diario para Manuel
 
-Empezá con lo importante, en lenguaje humano. Después las tablas del reporte. Al final, lo técnico.
+Lo arma la tarea de ChatGPT a partir de la fila de hoy de `reportes_diarios`. Empezá con lo importante, en
+lenguaje humano. Después las tablas del reporte. Al final, lo técnico.
 
 ```
 # Radar Inmobiliario — <fecha>
@@ -154,14 +153,13 @@ Empezá con lo importante, en lenguaje humano. Después las tablas del reporte. 
   en varias inmobiliarias a la vez, propiedades que desaparecieron de todas las fuentes, diferencias de precio
   grandes de la misma propiedad entre portales. Cada bullet con números concretos.>
 
-<pegá acá "## Tus reportes" (los reportes personalizados de Manuel), si hay>
+<personalizados_md: "## Tus reportes", si hay>
 
-<pegá acá el reporte Markdown que imprimió `python -m radar diaria` (desde "## Movimiento por inmobiliaria"),
- con las tablas tal cual: el mensaje ES el reporte, Manuel lo lee en ChatGPT>
+<reporte_md desde "## Movimiento por inmobiliaria", con las tablas tal cual>
 
 ---
-**Notas técnicas** (breve): fuentes con problemas, carga inicial en curso (%), tipo de cambio usado,
-barrios nuevos mapeados, PR pendiente de aprobar (si hay).
+**Notas técnicas** (breve, de salud_md): fuentes con problemas, carga inicial en curso (%), tipo de cambio.
+Si no hay fila de hoy en reportes_diarios, decilo: la corrida automática falló (ver pestaña Actions del repo).
 ```
 
 Si no hubo movimientos relevantes, decilo en una línea; no rellenes.

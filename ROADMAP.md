@@ -8,7 +8,8 @@ reporte diario).
 - [x] Esquema de base, scraper genérico, mapa de barrios (62 barrios de Montevideo + zonas + interior).
 - [x] Gallito por sitemap (con `lastmod` para priorizar avisos modificados y sitemap completo para detectar bajas).
 - [ ] Crear Supabase, correr `sql/schema.sql`, bucket `scrapeos` (ver `docs/SETUP.md`).
-- [ ] Configurar el entorno de Codex y la tarea programada diaria.
+- [x] Corrida diaria en GitHub Actions + tarea de ChatGPT que lee `reportes_diarios` (las tareas
+      programadas de ChatGPT no pueden ejecutar código: se comprobó el 18/11).
 - [ ] Primera corrida manual supervisada.
 
 ## Fase 1 — Cobertura de portales (semanas 1–2)

@@ -50,34 +50,49 @@ En chatgpt.com/codex → entorno `radar-inmobiliario` → **Editar entorno**:
      El código funciona sin ver la clave.
 4. **Guardar**.
 
-## 5. Primera corrida (manual, supervisada)
+## 5. La corrida automática (GitHub Actions)
 
-En Codex, con el entorno `radar-inmobiliario`, mandá:
+El scraping corre en la nube de GitHub todos los días a las 06:00 de Uruguay
+(`.github/workflows/radar-diario.yml`). Las tareas programadas de ChatGPT no pueden ejecutar código, por
+eso el trabajo pesado va acá.
 
-> Leé AGENTS.md. Hacé la puesta en marcha: corré `python -m radar seed`, después
-> `python -m radar probar-fuente gallito -n 5` y mostrame el resultado. Si todo se ve bien, corré la rutina
-> diaria completa (sección 1 de AGENTS.md) y dame el mensaje final.
+1. En el repo: **Settings → Secrets and variables → Actions → New repository secret**.
+   - Name: `SUPABASE_SERVICE_KEY`
+   - Secret: la clave secreta de Supabase (`sb_secret_...`).
+2. Probarlo a mano: pestaña **Actions → Radar diario → Run workflow** (podés poner `max_urls` = 200 para
+   una prueba corta). Tarda ~5 min la prueba corta y ~55 min la completa. Verde = salió bien; el resumen
+   del reporte queda en la página de esa corrida.
 
-Revisá que los 5 avisos de ejemplo tengan precio, barrio y operación correctos.
+Plan gratis de GitHub para repos privados: 2.000 minutos por mes; la corrida diaria usa ~55.
 
-## 6. La tarea programada diaria
+## 6. La tarea programada de ChatGPT (el mensaje para Manuel)
 
-En Codex → **Tareas programadas** → **Nueva**:
+Necesita el conector **Supabase Radar** (solo lectura) conectado en ChatGPT. En **Tareas programadas →
+Nueva** (o editar la que ya existe):
 
-- **Título:** `Radar Inmobiliario diario`
+- **Repetir:** Cada día — **Hora:** 7:30 (después de que termine la corrida de las 6:00).
 - **Qué debe hacer:**
-  > Usá el entorno radar-inmobiliario. Leé AGENTS.md y ejecutá la "Rutina diaria" (sección 1) completa.
-  > Tu respuesta final es el mensaje para Manuel con el formato de la sección 3.
-- **Repetir:** Cada día — **Hora:** 7:00 — **Finalizar repetición:** Nunca.
-- **Crear**.
 
-Si la tarea programada no deja elegir el entorno y no puede ver el repo, avisá: la alternativa es disparar la
-corrida con una GitHub Action (ver ROADMAP, riesgos).
+```
+Usá el conector Supabase Radar (solo lectura). Buscá en la tabla reportes_diarios la fila de hoy
+(fecha = fecha de hoy en Uruguay). Si no existe, buscá la más reciente y avisá arriba de todo que la corrida
+de hoy no llegó (hay que mirar la pestaña Actions del repo manuelstorace02/radar-inmobiliario).
+
+Con esa fila armá el mensaje para Manuel, en español rioplatense, para alguien no técnico:
+1) "Lo más importante hoy": 3 a 6 bullets interpretando reporte_md y personalizados_md, con números concretos
+   (qué inmobiliarias se movieron, zonas donde varias inmobiliarias subieron o bajaron precios, propiedades que
+   desaparecieron de todos lados, misma propiedad con precios muy distintos según dónde se publica).
+2) personalizados_md tal cual, si tiene contenido.
+3) reporte_md tal cual (las tablas).
+4) "Notas técnicas" breves con salud_md.
+
+Reglas: usá solo números que estén en esa fila o que consultes en la base; nunca digas "vendido" ni
+"alquilado", decí "desapareció"; si no hubo movimientos relevantes, decilo en una línea.
+```
 
 ## 7. Ver los resultados
 
-- **Todos los días**: el resultado de la tarea en ChatGPT (con notificación) es el resumen, con el link al
-  reporte visual completo (válido 7 días).
+- **Todos los días**: el resultado de la tarea en ChatGPT (con notificación) es el resumen.
 - **Los datos crudos**: Supabase → **Table Editor** (`avisos`, `eventos`, `estadisticas_diarias`...). Se puede
   filtrar y exportar a CSV como una planilla.
 - **Sumar una inmobiliaria**: pedíselo a Codex en el chat ("agregá la inmobiliaria X, web Y").

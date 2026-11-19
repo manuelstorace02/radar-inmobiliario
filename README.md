@@ -13,14 +13,16 @@ varios lugares con precios distintos) y manda un resumen con las tendencias por 
 ## Cómo está armado
 
 ```
-Codex (tarea programada, 7:00)            Supabase
+GitHub Actions (06:00)                    Supabase
   └─ python -m radar diaria   ───────────►  avisos        estado actual de cada aviso
        1. descubrir (sitemaps/listados)     eventos       alta · baja · precio · reaparece
        2. revisar avisos (educado)          corridas      salud de cada fuente por día
        3. comparar y registrar eventos      estadisticas_diarias  mediana USD y USD/m² por barrio
        4. misma propiedad entre fuentes     Storage       foto diaria completa (.jsonl.gz) y reportes
-       5. estadísticas + reporte
-  └─ mensaje para Manuel
+       5. estadísticas + reporte            reportes_diarios  el reporte del día
+                                                  │
+ChatGPT, tarea programada (07:30) ◄── conector ───┘   lee el reporte y le escribe a Manuel
+Codex (chat de trabajo)               arreglos, fuentes nuevas, reportes personalizados
 ```
 
 ## Probar en una compu (opcional)

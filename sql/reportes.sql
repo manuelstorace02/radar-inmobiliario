@@ -49,3 +49,15 @@ $$;
 
 revoke all on function radar_consulta(text) from public, anon, authenticated;
 grant execute on function radar_consulta(text) to service_role;
+
+-- Reporte de cada día: lo escribe la corrida automática (GitHub Actions) y lo lee la tarea de ChatGPT
+-- con el conector de Supabase para armar el mensaje de Manuel.
+create table if not exists reportes_diarios (
+  fecha             date primary key,
+  reporte_md        text,          -- reporte general (tablas)
+  personalizados_md text,          -- "## Tus reportes"
+  salud_md          text,          -- estado de las fuentes, barrios sin mapear, tipo de cambio
+  generado_en       timestamptz default now()
+);
+alter table reportes_diarios enable row level security;
+grant all on reportes_diarios to service_role;
