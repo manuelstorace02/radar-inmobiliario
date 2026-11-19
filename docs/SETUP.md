@@ -25,7 +25,8 @@ Todo en la nube: GitHub (código), Supabase (base de datos) y Codex en la cuenta
      pegues en el repo.**
 
 6. Después, de la misma forma, corré `sql/dashboard.sql` (cambiando la contraseña adentro, ver
-   `docs/DASHBOARD.md`) y `sql/reportes.sql` (reportes personalizados de Manuel).
+   `docs/DASHBOARD.md`), `sql/reportes.sql` (reportes personalizados) y `sql/lectura.sql` (lectura para el
+   conector de ChatGPT).
 
 ## 3. Poner la URL en el repo
 
