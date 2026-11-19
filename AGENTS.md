@@ -44,7 +44,12 @@ param CLAVE VALOR            cambia un parámetro (ej. tipo_cambio_usd_uyu)
 
 Seguí estos pasos en orden. Si un paso falla, anotalo y seguí con el resto: **el reporte tiene que salir igual**.
 
-1. **Dependencias.** Si `python -c "import httpx, bs4, lxml"` falla, corré `pip install -r requirements.txt`.
+0. **Código al día.** Asegurate de estar en la última versión de `main` (`git fetch origin && git checkout main &&
+   git reset --hard origin/main` si la copia local está vieja o incompleta, por ejemplo si solo ves `README.md`).
+1. **Dependencias.** Si `python -c "import httpx, bs4, lxml"` falla: el `pip` del sistema en este entorno no
+   funciona, así que usá un entorno virtual:
+   `python3 -m venv /tmp/radar-venv && /tmp/radar-venv/bin/pip install -q -r requirements.txt`
+   y de ahí en adelante corré todo con `/tmp/radar-venv/bin/python -m radar ...`.
 2. **Sincronizar configuración:** `python -m radar seed`.
 3. **Tipo de cambio.** Buscá la cotización del dólar interbancario del día (BCU, o en su defecto una fuente
    confiable de Uruguay) y cargala: `python -m radar param tipo_cambio_usd_uyu <valor>`. Si no la conseguís,

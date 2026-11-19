@@ -100,7 +100,8 @@ def armar(store: Store, hoy: date) -> dict:
     activos = sum(1 for a in d.avisos.values() if a["estado"] == "activo")
 
     resumen = [
-        f"**{activos:,} avisos activos** monitoreados en {len(d.fuentes)} fuentes.".replace(",", "."),
+        f"**{activos:,} avisos activos** monitoreados en "
+        f"{sum(1 for f in d.fuentes.values() if f.get('activa') and f.get('estado') != 'pausada')} fuente(s).".replace(",", "."),
         f"Hoy: **{len(altas)} publicados nuevos**, **{len(bajas)} dados de baja**, "
         f"**{len(precios)} cambios de precio** ({len(subas)} subas, {len(precios) - len(subas)} bajas).",
     ]

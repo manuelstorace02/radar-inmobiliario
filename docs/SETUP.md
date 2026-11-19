@@ -38,12 +38,13 @@ Commit a `main`.
 
 En chatgpt.com/codex → entorno `radar-inmobiliario` → **Editar entorno**:
 
-1. **Script de instalación** (✏️): `pip install -r requirements.txt`
+1. **Script de instalación** (✏️): `python3 -m venv /tmp/radar-venv && /tmp/radar-venv/bin/pip install -q -r requirements.txt`
 2. **Acceso a internet**: activado (ya lo está).
 3. **La clave de Supabase** — una de estas dos, según lo que ofrezca la pantalla:
    - Si hay **"Variables de entorno" / "Secretos"**: agregá `SUPABASE_SERVICE_KEY` = la clave service_role.
    - Si solo hay **"Secretos HTTP"**: creá uno para el dominio de tu proyecto (`abcdxyz.supabase.co`) que agregue
-     los encabezados `apikey: <clave>` y `Authorization: Bearer <clave>`. El código funciona sin ver la clave.
+     el encabezado `apikey: <clave>` (con una clave legacy `eyJ...`, también `Authorization: Bearer <clave>`).
+     El código funciona sin ver la clave.
 4. **Guardar**.
 
 ## 5. Primera corrida (manual, supervisada)
