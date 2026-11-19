@@ -219,3 +219,11 @@ alter table estadisticas_diarias enable row level security;
 
 -- migraciones (si la tabla ya existía)
 alter table fuentes add column if not exists sitemap_completo boolean default false;
+
+-- Permisos de la Data API: solo la service_role (la clave que usa el agente) puede usar estas tablas.
+-- Necesario si el proyecto se creó con "Grant API access to new tables automatically" desactivado.
+grant usage on schema public to service_role;
+grant all on all tables in schema public to service_role;
+grant all on all sequences in schema public to service_role;
+alter default privileges in schema public grant all on tables to service_role;
+alter default privileges in schema public grant all on sequences to service_role;
