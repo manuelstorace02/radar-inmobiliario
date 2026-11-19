@@ -104,17 +104,13 @@ def cmd_reporte(store, a):
     out.mkdir(exist_ok=True)
     (out / f"{rep['fecha']}.md").write_text(md, encoding="utf-8")
     (out / f"{rep['fecha']}.html").write_text(ht, encoding="utf-8")
-    link = None
+    # Se archivan en Storage (Supabase no los muestra como página: es solo respaldo/descarga).
     try:
-        store.subir_archivo(f"reportes/{rep['fecha']}.html", ht.encode(), "text/html")
-        store.subir_archivo("reportes/ultimo.html", ht.encode(), "text/html")
-        store.subir_archivo(f"reportes/{rep['fecha']}.md", md.encode(), "text/markdown")
-        link = store.link_firmado(f"reportes/{rep['fecha']}.html", dias=7)
+        store.subir_archivo(f"reportes/{rep['fecha']}.html", ht.encode(), "text/html; charset=utf-8")
+        store.subir_archivo(f"reportes/{rep['fecha']}.md", md.encode(), "text/markdown; charset=utf-8")
     except Exception as e:  # noqa: BLE001
         print(f"(no se pudo subir el reporte a Storage: {e})", file=sys.stderr)
     print(md)
-    if link:
-        print(f"\nReporte visual completo (link válido 7 días): {link}")
 
 
 def cmd_diaria(store, a):

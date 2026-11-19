@@ -158,6 +158,12 @@ async def correr_fuente(fuente: dict, ctx: Contexto, minutos: float, max_urls: i
     corrida = {"fecha": hoy, "fuente_id": fuente["id"], "inicio": ahora(), "urls_descubiertas": 0,
                "urls_revisadas": 0, "avisos_ok": 0, "nuevos": 0, "bajas": 0, "cambios_precio": 0,
                "errores": 0, "estado": "ok", "notas": ""}
+    if fuente.get("modo") == "adapter" and not (ad and hasattr(ad, "descubrir")):
+        corrida.update(estado="fallida", fin=ahora(),
+                       notas=f"modo 'adapter' pero no existe radar/adapters/{fuente['id'].replace('-', '_')}.py "
+                             "con descubrir(): no se corre (ver docs/NUEVA_FUENTE.md).")
+        store.insert("corridas", [corrida])
+        return corrida
     cli = Cliente(delay_seg=float(fuente.get("delay_seg") or 1.5))
     try:
         # 1) descubrir

@@ -106,7 +106,7 @@ Empezá con lo importante, en lenguaje humano. Después las tablas del reporte. 
   grandes de la misma propiedad entre portales. Cada bullet con números concretos.>
 
 <pegá acá el reporte Markdown que imprimió `python -m radar diaria` (desde "## Movimiento por inmobiliaria"),
- incluido el link al reporte visual>
+ con las tablas tal cual: el mensaje ES el reporte, Manuel lo lee en ChatGPT>
 
 ---
 **Notas técnicas** (breve): fuentes con problemas, carga inicial en curso (%), tipo de cambio usado,

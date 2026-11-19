@@ -185,7 +185,7 @@ def armar(store: Store, hoy: date) -> dict:
             hist[(s["departamento"], s["barrio"], s["operacion"], s["tipo"])][str(s["fecha"])[:10]] = float(s["mediana_usd_m2"])
     filas_m = []
     for k, serie in hist.items():
-        if d.h not in serie:
+        if d.h not in serie or k[2] != "venta" or k[1] == "¿?":
             continue
         actual = serie[d.h]
         def hace(n):
@@ -196,8 +196,8 @@ def armar(store: Store, hoy: date) -> dict:
         filas_m.append([k[1], OPS.get(k[2], k[2]), k[3], f"{actual:,.0f}".replace(",", "."),
                         _pct(100 * (actual / v7 - 1)) if v7 else "—", _pct(100 * (actual / v30 - 1)) if v30 else "—"])
     filas_m.sort(key=lambda r: r[0])
-    secciones.append(("Precio mediano por m² (USD) por barrio", ["Barrio", "Op.", "Tipo", "USD/m² hoy", "vs 7 d", "vs 30 d"],
-                      filas_m[:60], "Solo avisos activos con m² informados."))
+    secciones.append(("Precio mediano por m² en venta (USD) por barrio", ["Barrio", "Op.", "Tipo", "USD/m² hoy", "vs 7 d", "vs 30 d"],
+                      filas_m[:60], "Solo avisos de venta activos con m² informados."))
 
     # Misma propiedad, distinto precio
     props = defaultdict(list)
@@ -226,7 +226,7 @@ def armar(store: Store, hoy: date) -> dict:
     return {"fecha": d.h, "resumen": resumen, "salud": filas, "secciones": secciones, "pendientes": pend}
 
 
-def a_markdown(rep: dict, max_filas: int = 10) -> str:
+def a_markdown(rep: dict, max_filas: int = 20) -> str:
     out = [f"# Radar Inmobiliario — {rep['fecha']}", "", *[f"- {x}" for x in rep["resumen"]], ""]
     for titulo, cols, filas, nota in rep["secciones"]:
         if not filas:
@@ -244,7 +244,7 @@ def a_markdown(rep: dict, max_filas: int = 10) -> str:
                 celdas[0] = f"[{celdas[0]}]({link})"
             out.append("| " + " | ".join(str(c).replace("|", "/") for c in celdas) + " |")
         if len(filas) > max_filas:
-            out.append(f"\n…y {len(filas) - max_filas} más en el reporte completo.")
+            out.append(f"\n…y {len(filas) - max_filas} más (pedíselas a Codex o miralas en el dashboard).")
         out.append("")
     return "\n".join(out)
 
