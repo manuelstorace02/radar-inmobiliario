@@ -78,7 +78,9 @@ class SupabaseStore(Store):
         self.url = url.rstrip("/")
         h = {"Content-Type": "application/json"}
         if key:  # si el entorno inyecta la clave por proxy (secreto HTTP), puede venir vacía
-            h.update({"apikey": key, "Authorization": f"Bearer {key}"})
+            h["apikey"] = key
+            if key.startswith("eyJ"):  # claves "legacy" (JWT) van también como Bearer; las sb_secret_ solo en apikey
+                h["Authorization"] = f"Bearer {key}"
         self.http = httpx.Client(headers=h, timeout=60)
 
     def _rest(self, tabla: str) -> str:
