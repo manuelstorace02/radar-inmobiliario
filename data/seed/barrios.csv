@@ -1,0 +1,182 @@
+# Mapa de barrios. barrio = nombre canónico; alias = otras formas de escribirlo, separadas por ';'
+# tipo: barrio (oficial INE/IM) | zona (nombre de mercado dentro de un barrio) | localidad | departamento
+# Montevideo: los 62 barrios del INE. Las "zonas" de mercado apuntan al barrio oficial donde caen mayormente.
+# OJO: casi todos los departamentos son también nombres de calles de Montevideo (Rivera, Artigas, Soriano,
+# Canelones, Maldonado...). Por eso los alias de tipo 'departamento' solo cuentan en campos estructurados
+# (ubicación / breadcrumb), nunca en título, URL o descripción.
+# El agente agrega alias nuevos acá cuando aparecen en barrios_sin_mapear.
+barrio,departamento,tipo,alias
+Ciudad Vieja,Montevideo,barrio,
+Centro,Montevideo,barrio,centro de montevideo
+Barrio Sur,Montevideo,barrio,
+Cordón,Montevideo,barrio,cordon norte;cordon sur
+Palermo,Montevideo,barrio,
+Parque Rodó,Montevideo,barrio,parque rodo
+Punta Carretas,Montevideo,barrio,golf;punta carretas golf;villa biarritz
+Pocitos,Montevideo,barrio,pocitos nuevo;pocitos viejo;trouville;pocitos rambla
+Buceo,Montevideo,barrio,puerto del buceo;world trade center;wtc
+Parque Batlle - Villa Dolores,Montevideo,barrio,parque batlle;villa dolores;parque batlle villa dolores
+Malvín,Montevideo,barrio,malvin;malvin sur;playa malvin
+Malvín Norte,Montevideo,barrio,malvin norte;malvín norte;malvin alto
+Punta Gorda,Montevideo,barrio,
+Carrasco,Montevideo,barrio,carrasco sur;carrasco este;carrasco oeste
+Carrasco Norte,Montevideo,barrio,carrasco norte
+Bañados de Carrasco,Montevideo,barrio,banados de carrasco
+Maroñas - Parque Guaraní,Montevideo,barrio,maronas;maroñas;parque guarani
+Flor de Maroñas,Montevideo,barrio,flor de maronas
+Las Canteras,Montevideo,barrio,
+Punta de Rieles - Bella Italia,Montevideo,barrio,punta de rieles;bella italia
+Jardines del Hipódromo,Montevideo,barrio,jardines del hipodromo
+Ituzaingó,Montevideo,barrio,ituzaingo
+Unión,Montevideo,barrio,union;barrio union
+Villa Española,Montevideo,barrio,villa espanola
+Mercado Modelo - Bolívar,Montevideo,barrio,mercado modelo;bolivar
+Castro - Pérez Castellanos,Montevideo,barrio,castro;perez castellanos;castro castellanos
+Cerrito,Montevideo,barrio,cerrito de la victoria
+Las Acacias,Montevideo,barrio,
+Aires Puros,Montevideo,barrio,
+Casavalle,Montevideo,barrio,borro
+Piedras Blancas,Montevideo,barrio,
+Manga - Toledo Chico,Montevideo,barrio,toledo chico
+Paso de las Duranas,Montevideo,barrio,
+Peñarol - Lavalleja,Montevideo,barrio,penarol;peñarol;barrio lavalleja
+Cerro,Montevideo,barrio,villa del cerro;cerro de montevideo
+Casabó - Pajas Blancas,Montevideo,barrio,casabo;pajas blancas
+La Paloma - Tomkinson,Montevideo,barrio,tomkinson;la paloma tomkinson
+La Teja,Montevideo,barrio,
+Prado - Nueva Savona,Montevideo,barrio,prado;nueva savona;el prado
+Capurro - Bella Vista,Montevideo,barrio,capurro;bella vista
+Aguada,Montevideo,barrio,la aguada
+Reducto,Montevideo,barrio,
+Atahualpa,Montevideo,barrio,
+Jacinto Vera,Montevideo,barrio,
+La Figurita,Montevideo,barrio,
+Larrañaga,Montevideo,barrio,larranaga
+La Blanqueada,Montevideo,barrio,blanqueada
+Villa Muñoz - Retiro,Montevideo,barrio,villa munoz;villa muñoz;retiro;goes
+La Comercial,Montevideo,barrio,
+Tres Cruces,Montevideo,barrio,
+Brazo Oriental,Montevideo,barrio,
+Sayago,Montevideo,barrio,
+Conciliación,Montevideo,barrio,conciliacion
+Belvedere,Montevideo,barrio,
+Nuevo París,Montevideo,barrio,nuevo paris
+Tres Ombúes - Victoria,Montevideo,barrio,tres ombues;pueblo victoria
+Paso de la Arena,Montevideo,barrio,santiago vazquez;santiago vázquez
+Colón Sureste - Abayubá,Montevideo,barrio,abayuba;colon sureste
+Colón Centro y Noroeste,Montevideo,barrio,colon;colón;colon centro
+Lezica - Melilla,Montevideo,barrio,lezica;melilla
+Villa García - Manga Rural,Montevideo,barrio,villa garcia;manga rural
+Manga,Montevideo,barrio,
+Parque Miramar,Canelones,localidad,
+Ciudad de la Costa,Canelones,localidad,
+Barra de Carrasco,Canelones,localidad,
+Paso Carrasco,Canelones,localidad,
+Colinas de Carrasco,Canelones,localidad,
+Shangrilá,Canelones,localidad,shangrila
+San José de Carrasco,Canelones,localidad,san jose de carrasco
+Lagomar,Canelones,localidad,
+Solymar,Canelones,localidad,lomas de solymar
+El Pinar,Canelones,localidad,
+Lomas de Carrasco,Canelones,localidad,
+Carrasco Lagomar,Canelones,localidad,
+Neptunia,Canelones,localidad,
+Salinas,Canelones,localidad,
+Marindia,Canelones,localidad,
+Pinamar,Canelones,localidad,pinamar pinepark;pinepark
+Atlántida,Canelones,localidad,atlantida
+Las Toscas,Canelones,localidad,
+Parque del Plata,Canelones,localidad,
+La Floresta,Canelones,localidad,
+Costa Azul,Canelones,localidad,
+Jaureguiberry,Canelones,localidad,
+Pando,Canelones,localidad,
+Las Piedras,Canelones,localidad,
+La Paz,Canelones,localidad,
+Progreso,Canelones,localidad,
+Canelones (ciudad),Canelones,localidad,ciudad de canelones
+Santa Lucía,Canelones,localidad,santa lucia
+Sauce,Canelones,localidad,
+Toledo,Canelones,localidad,
+Barros Blancos,Canelones,localidad,
+Joaquín Suárez,Canelones,localidad,joaquin suarez
+Punta del Este,Maldonado,localidad,pde;punta del este peninsula
+Península,Maldonado,zona,peninsula;la peninsula
+Playa Mansa,Maldonado,zona,mansa
+Playa Brava,Maldonado,zona,brava
+Aidy Grill,Maldonado,zona,
+Roosevelt,Maldonado,zona,
+San Rafael,Maldonado,zona,
+Cantegril,Maldonado,zona,
+Beverly Hills,Maldonado,zona,
+Golf (Punta del Este),Maldonado,zona,golf punta del este;golf
+Pinares,Maldonado,zona,
+Punta Ballena,Maldonado,localidad,
+Portezuelo,Maldonado,localidad,
+Solanas,Maldonado,localidad,
+La Barra,Maldonado,localidad,
+Manantiales,Maldonado,localidad,
+El Chorro,Maldonado,localidad,
+Balneario Buenos Aires,Maldonado,localidad,
+José Ignacio,Maldonado,localidad,jose ignacio
+Ocean Park,Maldonado,localidad,
+Punta Colorada,Maldonado,localidad,
+Piriápolis,Maldonado,localidad,piriapolis
+Playa Hermosa,Maldonado,localidad,
+Playa Grande,Maldonado,localidad,
+Pan de Azúcar,Maldonado,localidad,pan de azucar
+San Carlos,Maldonado,localidad,
+Maldonado (ciudad),Maldonado,localidad,ciudad de maldonado;maldonado centro
+Garzón,Maldonado,localidad,garzon;pueblo garzon
+La Paloma (Rocha),Rocha,localidad,la paloma
+La Pedrera,Rocha,localidad,
+Punta del Diablo,Rocha,localidad,
+Cabo Polonio,Rocha,localidad,
+Barra de Valizas,Rocha,localidad,valizas
+Aguas Dulces,Rocha,localidad,
+La Coronilla,Rocha,localidad,
+Chuy,Rocha,localidad,chui
+Rocha (ciudad),Rocha,localidad,ciudad de rocha
+Colonia del Sacramento,Colonia,localidad,colonia del sacramento;colonia ciudad
+Carmelo,Colonia,localidad,
+Nueva Helvecia,Colonia,localidad,colonia suiza
+Rosario,Colonia,localidad,
+Juan Lacaze,Colonia,localidad,
+Nueva Palmira,Colonia,localidad,
+Ciudad del Plata,San José,localidad,
+San José de Mayo,San José,localidad,san jose de mayo
+Kiyú,San José,localidad,kiyu
+Minas,Lavalleja,localidad,
+Florida (ciudad),Florida,localidad,ciudad de florida
+Treinta y Tres (ciudad),Treinta y Tres,localidad,ciudad de treinta y tres
+Melo,Cerro Largo,localidad,
+Río Branco,Cerro Largo,localidad,rio branco
+Rivera (ciudad),Rivera,localidad,ciudad de rivera
+Tacuarembó (ciudad),Tacuarembó,localidad,ciudad de tacuarembo
+Durazno (ciudad),Durazno,localidad,ciudad de durazno
+Trinidad,Flores,localidad,
+Mercedes,Soriano,localidad,
+Fray Bentos,Río Negro,localidad,
+Paysandú (ciudad),Paysandú,localidad,ciudad de paysandu
+Salto (ciudad),Salto,localidad,ciudad de salto
+Artigas (ciudad),Artigas,localidad,ciudad de artigas
+Bella Unión,Artigas,localidad,bella union
+Montevideo,Montevideo,departamento,mvd
+Canelones,Canelones,departamento,
+Maldonado,Maldonado,departamento,
+Rocha,Rocha,departamento,
+Colonia,Colonia,departamento,
+San José,San José,departamento,san jose
+Florida,Florida,departamento,
+Lavalleja,Lavalleja,departamento,
+Treinta y Tres,Treinta y Tres,departamento,
+Cerro Largo,Cerro Largo,departamento,
+Rivera,Rivera,departamento,
+Tacuarembó,Tacuarembó,departamento,tacuarembo
+Durazno,Durazno,departamento,
+Flores,Flores,departamento,
+Soriano,Soriano,departamento,
+Río Negro,Río Negro,departamento,rio negro
+Paysandú,Paysandú,departamento,paysandu
+Salto,Salto,departamento,
+Artigas,Artigas,departamento,
