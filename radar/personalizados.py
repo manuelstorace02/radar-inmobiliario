@@ -49,10 +49,15 @@ def guardar(store: Store, id_: str, nombre: str, descripcion: str, sql: str, fre
 
 
 def correr_todos(store: Store, hoy: date) -> str:
+    return correr(store, hoy)[0]
+
+
+def correr(store: Store, hoy: date) -> tuple[str, list[dict]]:
+    """Devuelve (markdown, items) — items = [{nombre, descripcion, filas | error}] para el reporte visual."""
     reportes = [r for r in store.select("reportes_guardados") if r.get("activo")]
     if not reportes:
-        return ""
-    secciones, actualizados = [], []
+        return "", []
+    secciones, actualizados, items = [], [], []
     for r in sorted(reportes, key=lambda r: r["id"]):
         if r.get("frecuencia") == "semanal" and hoy.weekday() != 0:  # semanales: los lunes
             continue
@@ -62,16 +67,18 @@ def correr_todos(store: Store, hoy: date) -> str:
             filas = store.consulta(r["sql"])
             r["ultimas_filas"], r["ultimo_error"] = len(filas), None
             if filas or not r.get("solo_si_hay_resultados", True):
+                items.append({"nombre": r["nombre"], "descripcion": r.get("descripcion"), "filas": filas})
                 cab = f"### {r['nombre']}"
                 if r.get("descripcion"):
                     cab += f"\n_{r['descripcion']}_"
                 secciones.append(f"{cab}\n\n{tabla_md(filas)}")
         except Exception as e:  # noqa: BLE001
             r["ultimo_error"] = str(e)[:500]
+            items.append({"nombre": r["nombre"], "descripcion": r.get("descripcion"), "error": str(e)})
             secciones.append(f"### {r['nombre']}\n\n⚠️ No se pudo correr hoy: {str(e)[:200]}")
         actualizados.append(r)
     if actualizados:
         store.upsert("reportes_guardados", actualizados)
     if not secciones:
-        return "## Tus reportes\n\n_Ninguno de tus reportes tuvo resultados hoy._"
-    return "## Tus reportes\n\n" + "\n\n".join(secciones)
+        return "## Tus reportes\n\n_Ninguno de tus reportes tuvo resultados hoy._", items
+    return "## Tus reportes\n\n" + "\n\n".join(secciones), items

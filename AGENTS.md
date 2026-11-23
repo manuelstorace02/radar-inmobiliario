@@ -49,11 +49,12 @@ reportes                     lista los reportes personalizados de Manuel
 La corrida diaria **no la hacés vos**: la hace **GitHub Actions** (`.github/workflows/radar-diario.yml`) a las
 06:00 de Uruguay, con la clave de Supabase guardada como secreto del repo. Hace: `seed` → `tipo-cambio` →
 `diaria` (scraping, misma propiedad, estadísticas, reporte y reportes personalizados) y guarda el resultado en la
-tabla **`reportes_diarios`** (`reporte_md`, `personalizados_md`, `salud_md`). El log queda en la pestaña
+tabla **`reportes_diarios`** (`reporte_md`, `personalizados_md`, `salud_md` y `reporte_html`, una página visual
+autocontenida con un hueco `<!--RESUMEN-->` para el resumen). El log queda en la pestaña
 Actions del repo.
 
 A las 07:30 una **tarea programada de ChatGPT** lee esa fila con el conector de Supabase (solo lectura) y le
-escribe a Manuel el mensaje del día (formato en la sección 3).
+escribe a Manuel el mensaje del día (formato en la sección 3) y le entrega el reporte visual como archivo.
 
 ### Si estás en Codex (chat de trabajo) y te piden revisar o correr algo a mano
 0. **Código al día:** `git fetch origin && git checkout main && git reset --hard origin/main` si la copia está vieja.

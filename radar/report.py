@@ -31,6 +31,7 @@ class Datos:
         self.eventos = store.select("eventos", gte={"fecha": (hoy - timedelta(days=30)).isoformat()})
         self.corridas = [c for c in store.select("corridas", eq={"fecha": self.h})]
         self.stats_prev = store.select("estadisticas_diarias", gte={"fecha": (hoy - timedelta(days=31)).isoformat()})
+        self.tc = store.param("tipo_cambio_usd_uyu")
         self.sin_mapear = sorted(store.select("barrios_sin_mapear"), key=lambda r: -int(r.get("veces") or 0))
 
     def inmobiliaria(self, a: dict) -> str:
@@ -146,7 +147,7 @@ def armar(store: Store, hoy: date) -> dict:
         a = d.avisos[e["aviso_id"]]
         pct = 100 * (float(e["precio_usd_nuevo"]) / float(e["precio_usd_anterior"]) - 1)
         filas_p.append([d.inmobiliaria(a), OPS.get(a.get("operacion"), ""), a.get("tipo") or "", a.get("barrio") or "¿?",
-                        e.get("valor_anterior") or "", e.get("valor_nuevo") or "", _pct(pct), a["url"]])
+                        _usd(e.get("precio_usd_anterior")), _usd(e.get("precio_usd_nuevo")), _pct(pct), a["url"]])
     secciones.append(("Cambios de precio de hoy", ["Inmobiliaria", "Op.", "Tipo", "Barrio", "Antes", "Ahora", "Var.", "Link"],
                       filas_p, ""))
 
@@ -223,7 +224,28 @@ def armar(store: Store, hoy: date) -> dict:
     # Pendientes del agente
     pend = [f"{r['texto']} ({r.get('departamento') or 's/depto'}) ×{r['veces']}" for r in d.sin_mapear[:15]]
 
-    return {"fecha": d.h, "resumen": resumen, "salud": filas, "secciones": secciones, "pendientes": pend}
+    # KPIs y datos para gráficos (reporte visual)
+    import re as _re
+    cargas = []
+    for c in d.corridas:
+        m = _re.search(r"carga inicial: (\d+) de (\d+)", c.get("notas") or "")
+        if m:
+            cargas.append((d.fuentes.get(c["fuente_id"], {}).get("nombre", c["fuente_id"]), int(m.group(1)), int(m.group(2))))
+    m2_barrio = defaultdict(list)
+    for a in d.avisos.values():
+        if (a["estado"] == "activo" and a.get("operacion") == "venta" and a.get("tipo") == "apartamento"
+                and a.get("barrio") and a.get("precio_usd") and a.get("m2_edificados") and float(a["m2_edificados"]) >= 15):
+            m2_barrio[a["barrio"]].append(float(a["precio_usd"]) / float(a["m2_edificados"]))
+    graf_m2 = sorted(((b, statistics.median(v), len(v)) for b, v in m2_barrio.items() if len(v) >= 5),
+                     key=lambda x: -x[1])[:15]
+    graf_inm = sorted(((k, v["alta"], v["baja"], v["sube"], v["baja_precio"]) for k, v in por_inm.items()),
+                      key=lambda x: -sum(x[1:]))[:10]
+    kpis = {"activos": activos, "altas": len(altas), "bajas": len(bajas), "subas": len(subas),
+            "bajas_precio": len(precios) - len(subas), "multifuente": multi,
+            "fuentes": sum(1 for f in d.fuentes.values() if f.get("activa") and f.get("estado") != "pausada"),
+            "tc": d.tc}
+    return {"fecha": d.h, "resumen": resumen, "salud": filas, "secciones": secciones, "pendientes": pend,
+            "kpis": kpis, "cargas": cargas, "graf_m2": graf_m2, "graf_inm": graf_inm, "malas": [c["fuente_id"] for c in malas]}
 
 
 def a_markdown(rep: dict, max_filas: int = 20) -> str:
@@ -249,38 +271,156 @@ def a_markdown(rep: dict, max_filas: int = 20) -> str:
     return "\n".join(out)
 
 
-def a_html(rep: dict) -> str:
+def _n(x) -> str:
+    return f"{int(round(float(x))):,}".replace(",", ".")
+
+
+def a_html(rep: dict, personalizados: list | None = None) -> str:
+    """Reporte visual autocontenido (sin internet, sin librerías): se abre con doble clic en cualquier navegador.
+    Trae un hueco <!--RESUMEN--> para que la tarea de ChatGPT escriba ahí "Lo más importante hoy"."""
     e = html.escape
-    partes = []
+    k = rep.get("kpis", {})
+    fecha = rep["fecha"]
+
+    def tarjeta(valor, etiqueta, clase=""):
+        return f'<div class="kpi {clase}"><div class="kv">{e(str(valor))}</div><div class="kl">{e(etiqueta)}</div></div>'
+
+    kpis = "".join([
+        tarjeta(_n(k.get("activos", 0)), "avisos activos"),
+        tarjeta(k.get("altas", 0), "publicados hoy", "pos"),
+        tarjeta(k.get("bajas", 0), "desaparecieron", "neg"),
+        tarjeta(k.get("subas", 0), "subieron de precio", "neg"),
+        tarjeta(k.get("bajas_precio", 0), "bajaron de precio", "pos"),
+        tarjeta(k.get("multifuente", 0), "propiedades en +1 lugar"),
+    ])
+
+    chips = []
+    for nombre, cargados, total in rep.get("cargas", []):
+        pct = 100 * cargados / total if total else 0
+        chips.append(f'<span class="chip">{e(nombre)}: carga inicial {pct:.0f}% '
+                     f'<span class="mut">({_n(cargados)} de {_n(total)})</span></span>')
+    for f in rep.get("malas", []):
+        chips.append(f'<span class="chip alerta">⚠ {e(f)} con problemas hoy</span>')
+
+    def barras(items, fmt, titulo, nota=""):
+        if not items:
+            return ""
+        mx = max(v for _, v, *_ in items) or 1
+        filas = "".join(
+            f'<div class="bar"><div class="bl">{e(str(n))}</div><div class="bt"><div class="bf" style="width:{100*v/mx:.1f}%"></div></div>'
+            f'<div class="bv">{e(fmt(v, *resto))}</div></div>' for n, v, *resto in items)
+        return f'<section class="card"><h2>{e(titulo)}</h2>{f"<p class=nota>{e(nota)}</p>" if nota else ""}{filas}</section>'
+
+    graf_m2 = barras([(b, v, c) for b, v, c in rep.get("graf_m2", [])],
+                     lambda v, c: f"US$ {_n(v)}/m²  ·  {c} avisos",
+                     "Precio por m² — apartamentos en venta", "Mediana por barrio, barrios con 5+ avisos con m² informado.")
+    inm = rep.get("graf_inm", [])
+    graf_inm = ""
+    if inm:
+        mx = max(sum(x[1:]) for x in inm) or 1
+        filas = ""
+        for n, alta, baja, sube, bajap in inm:
+            segs = "".join(f'<div class="seg {c}" style="width:{100*v/mx:.1f}%" title="{t}: {v}"></div>'
+                           for v, c, t in ((alta, "s-alta", "Nuevos"), (baja, "s-baja", "Bajas"),
+                                           (sube, "s-sube", "Suben"), (bajap, "s-bajap", "Bajan")) if v)
+            filas += (f'<div class="bar"><div class="bl">{e(n)}</div><div class="bt stack">{segs}</div>'
+                      f'<div class="bv">{alta + baja + sube + bajap}</div></div>')
+        graf_inm = ('<section class="card"><h2>Movimiento por inmobiliaria hoy</h2><div class="ley">'
+                    '<span><i class="s-alta"></i>Nuevos</span><span><i class="s-baja"></i>Desaparecieron</span>'
+                    '<span><i class="s-sube"></i>Suben precio</span><span><i class="s-bajap"></i>Bajan precio</span>'
+                    f'</div>{filas}</section>')
+
+    def tabla(cols, filas):
+        cab = "".join(f"<th>{e(c)}</th>" for c in cols if c != "Link")
+        cuerpo = ""
+        for f in filas:
+            celdas = []
+            link = f[cols.index("Link")] if "Link" in cols else None
+            for c, v in zip(cols, f):
+                if c == "Link":
+                    continue
+                txt = e(str(v))
+                if link and not celdas:
+                    txt = f'<a href="{e(link)}" target="_blank" rel="noopener">{txt}</a>'
+                cls = ' class="up"' if str(v).startswith("+") else (' class="down"' if str(v).startswith("-") and "%" in str(v) else "")
+                celdas.append(f"<td{cls}>{txt}</td>")
+            cuerpo += "<tr>" + "".join(celdas) + "</tr>"
+        return f'<div class="tw"><table><thead><tr>{cab}</tr></thead><tbody>{cuerpo}</tbody></table></div>'
+
+    secciones = ""
     for titulo, cols, filas, nota in rep["secciones"]:
-        cuerpo = "".join(
-            "<tr>" + "".join(
-                f'<td><a href="{e(v)}" target="_blank">ver</a></td>' if c == "Link" else f"<td>{e(str(v))}</td>"
-                for c, v in zip(cols, f)) + "</tr>" for f in filas) or \
-            f'<tr><td colspan="{len(cols)}" class="vacio">Sin movimientos.</td></tr>'
-        partes.append(f"<section><h2>{e(titulo)}</h2>" + (f'<p class="nota">{e(nota)}</p>' if nota else "") +
-                      f'<div class="tabla"><table><thead><tr>{"".join(f"<th>{e(c)}</th>" for c in cols)}</tr></thead>'
-                      f"<tbody>{cuerpo}</tbody></table></div></section>")
-    salud = "".join(f"<tr>{''.join(f'<td>{e(str(v))}</td>' for v in f)}</tr>" for f in rep["salud"])
-    resumen = "".join(f"<li>{_md_bold(e(x))}</li>" for x in rep["resumen"])
-    return f"""<!doctype html><html lang="es"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>Radar Inmobiliario {rep['fecha']}</title>
+        if not filas or (titulo.startswith("Movimiento por inmobiliaria") and graf_inm):
+            continue  # ese ya está como gráfico
+        secciones += (f'<section class="card"><h2>{e(titulo)} <span class="cnt">{len(filas)}</span></h2>'
+                      + (f'<p class="nota">{e(nota)}</p>' if nota else "") + tabla(cols, filas) + "</section>")
+
+    tus = ""
+    for p in personalizados or []:
+        if p.get("error"):
+            cuerpo = f'<p class="nota">⚠ No se pudo correr hoy: {e(p["error"][:200])}</p>'
+        elif p.get("filas"):
+            from .personalizados import _celda
+            cols = [c for c in p["filas"][0].keys() if c != "url"]
+            def fmt(c, v):
+                if v is None:
+                    return "—"
+                if isinstance(v, (int, float)) and ("usd" in c or "precio" in c):
+                    return _usd(v)
+                return _celda(v, 80)
+            filas = [[*(fmt(c, r.get(c)) for c in cols), r.get("url") or ""] for r in p["filas"][:50]]
+            bonitas = [c.replace("_usd", " (USD)").replace("_", " ").capitalize() for c in cols]
+            cuerpo = tabla(bonitas + ["Link"], filas) if "url" in p["filas"][0] else tabla(bonitas, [f[:-1] for f in filas])
+        else:
+            cuerpo = '<p class="nota">Sin resultados hoy.</p>'
+        tus += (f'<div class="pers"><h3>{e(p["nombre"])}</h3>'
+                + (f'<p class="nota">{e(p["descripcion"])}</p>' if p.get("descripcion") else "") + cuerpo + "</div>")
+    if tus:
+        tus = f'<section class="card destacado"><h2>Tus reportes</h2>{tus}</section>'
+
+    resumen_def = "".join(f"<li>{_md_bold(e(x))}</li>" for x in rep["resumen"])
+    salud = "".join("<tr>" + "".join(f"<td>{e(str(v))}</td>" for v in f) + "</tr>" for f in rep["salud"])
+
+    return f"""<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radar Inmobiliario · {fecha}</title>
 <style>
-:root{{--bg:#fafaf8;--fg:#1d1d1b;--mut:#6b6b66;--line:#e4e3de;--acc:#1f5f8b;--card:#fff}}
-@media (prefers-color-scheme:dark){{:root{{--bg:#151514;--fg:#ecebe6;--mut:#a09f99;--line:#2e2e2b;--acc:#7fb6dd;--card:#1d1d1b}}}}
-body{{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,system-ui,sans-serif}}
-main{{max-width:1100px;margin:0 auto;padding:24px 16px}}h1{{font-size:24px;margin:0 0 4px}}
-h2{{font-size:17px;margin:32px 0 6px}}.nota{{color:var(--mut);font-size:13px;margin:0 0 8px}}
-ul.res{{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 14px 14px 32px}}
-.tabla{{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card)}}
-table{{border-collapse:collapse;width:100%;font-size:13px}}th,td{{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}}
-th{{color:var(--mut);font-weight:600}}a{{color:var(--acc)}}.vacio{{color:var(--mut)}}details{{margin-top:32px;color:var(--mut)}}
+:root{{--bg:#f6f5f1;--card:#fff;--fg:#1c1c1a;--mut:#6d6c66;--line:#e7e5de;--acc:#1f5f8b;--pos:#2e7d4f;--neg:#b4432f;
+--alta:#3d8b5f;--baja:#c4553f;--sube:#d9963a;--bajap:#4a86b5;--bar:#1f5f8b}}
+@media (prefers-color-scheme:dark){{:root{{--bg:#121211;--card:#1c1c1a;--fg:#eceae4;--mut:#a3a19a;--line:#2d2c29;--acc:#86b8de;
+--pos:#6cc191;--neg:#ec8b78;--bar:#6aa6d4}}}}
+*{{box-sizing:border-box}}body{{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}}
+main{{max-width:1080px;margin:0 auto;padding:28px 16px 60px}}
+header h1{{font-size:28px;margin:0;letter-spacing:-.02em}}header .sub{{color:var(--mut);margin-top:2px}}
+.chips{{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}}.chip{{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px}}
+.chip.alerta{{border-color:var(--neg);color:var(--neg)}}.mut{{color:var(--mut)}}
+.kpis{{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0}}
+.kpi{{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}}
+.kv{{font-size:28px;font-weight:700;letter-spacing:-.02em}}.kl{{color:var(--mut);font-size:13px}}
+.kpi.pos .kv{{color:var(--pos)}}.kpi.neg .kv{{color:var(--neg)}}
+.card{{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 18px 14px;margin:16px 0}}
+.card h2{{font-size:17px;margin:0 0 10px}}.card h3{{font-size:15px;margin:14px 0 4px}}.cnt{{color:var(--mut);font-weight:500;font-size:13px}}
+.destacado{{border:2px solid var(--acc)}}.resumen ul{{margin:0;padding-left:20px}}.resumen li{{margin:6px 0}}
+.nota{{color:var(--mut);font-size:13px;margin:0 0 10px}}
+.bar{{display:grid;grid-template-columns:minmax(110px,30%) 1fr auto;gap:10px;align-items:center;margin:7px 0;font-size:13px}}
+.bl{{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}.bt{{background:var(--line);border-radius:6px;height:12px;overflow:hidden;display:flex}}
+.bf{{background:var(--bar);height:100%;border-radius:6px}}.bv{{color:var(--mut);white-space:nowrap}}
+.seg{{height:100%}}.s-alta{{background:var(--alta)}}.s-baja{{background:var(--baja)}}.s-sube{{background:var(--sube)}}.s-bajap{{background:var(--bajap)}}
+.ley{{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--mut);margin-bottom:6px}}.ley i{{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}}
+.tw{{overflow-x:auto}}table{{border-collapse:collapse;width:100%;font-size:13px}}
+th,td{{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}}th{{color:var(--mut);font-weight:600}}
+td.up{{color:var(--neg)}}td.down{{color:var(--pos)}}a{{color:var(--acc);text-decoration:none}}a:hover{{text-decoration:underline}}
+details{{margin-top:22px;color:var(--mut)}}summary{{cursor:pointer}}footer{{color:var(--mut);font-size:12px;margin-top:28px}}
+@media (max-width:560px){{.kv{{font-size:23px}}.bar{{grid-template-columns:96px 1fr auto}}}}
 </style></head><body><main>
-<h1>Radar Inmobiliario</h1><div class="nota">{rep['fecha']}</div><ul class="res">{resumen}</ul>
-{''.join(partes)}
-<details><summary>Estado de las fuentes hoy</summary><div class="tabla"><table><thead><tr>
-<th>Fuente</th><th>Estado</th><th>Revisadas</th><th>OK</th><th>Nuevos</th><th>Bajas</th><th>Precio</th><th>Notas</th>
-</tr></thead><tbody>{salud}</tbody></table></div></details>
+<header><h1>Radar Inmobiliario</h1><div class="sub">{fecha} · {k.get("fuentes", 1)} fuente(s) monitoreada(s)</div>
+<div class="chips">{"".join(chips)}</div></header>
+<div class="kpis">{kpis}</div>
+<section class="card destacado resumen"><h2>Lo más importante hoy</h2><ul><!--RESUMEN-->{resumen_def}<!--/RESUMEN--></ul></section>
+{tus}{graf_inm}{graf_m2}{secciones}
+<details><summary>Estado de las fuentes</summary><div class="tw"><table><thead><tr><th>Fuente</th><th>Estado</th>
+<th>Revisadas</th><th>OK</th><th>Nuevos</th><th>Bajas</th><th>Precio</th><th>Notas</th></tr></thead><tbody>{salud}</tbody></table></div></details>
+<footer>"Desapareció" no significa vendido ni alquilado: el aviso dejó de estar publicado. Precios en USD
+(pesos convertidos al tipo de cambio del día{f": {k['tc']}" if k.get("tc") else ""}).</footer>
 </main></body></html>"""
 
 

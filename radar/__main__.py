@@ -105,7 +105,7 @@ def cmd_estadisticas(store, a):
 
 def cmd_reporte(store, a):
     rep = report.armar(store, hoy())
-    md, ht = report.a_markdown(rep), report.a_html(rep)
+    md, ht = report.a_markdown(rep), report.a_html(rep)  # el HTML final (con reportes personalizados) lo arma diaria
     out = ROOT / "reportes"
     out.mkdir(exist_ok=True)
     (out / f"{rep['fecha']}.md").write_text(md, encoding="utf-8")
@@ -117,7 +117,7 @@ def cmd_reporte(store, a):
     except Exception as e:  # noqa: BLE001
         print(f"(no se pudo subir el reporte a Storage: {e})", file=sys.stderr)
     print(md)
-    return md
+    return md, rep
 
 
 def _salud_md(store) -> str:
@@ -136,12 +136,22 @@ def cmd_diaria(store, a):
     print("== 1/5 scraping"); cmd_correr(store, a)
     print("\n== 2/5 misma propiedad entre fuentes"); cmd_dedupe(store, a)
     print("\n== 3/5 estadísticas"); cmd_estadisticas(store, a)
-    print("\n== 4/5 reporte\n"); md = cmd_reporte(store, a)
-    print("\n== 5/5 reportes personalizados\n"); pers = cmd_reportes_correr(store, a)
+    print("\n== 4/5 reporte\n"); md, rep = cmd_reporte(store, a)
+    print("\n== 5/5 reportes personalizados\n")
+    try:
+        pers, items = personalizados.correr(store, hoy())
+    except Exception as e:  # noqa: BLE001
+        pers, items = "", []
+        print(f"(no se pudieron correr los reportes personalizados: {e})")
+    print(pers or "(no hay reportes personalizados guardados)")
+    ht = report.a_html(rep, items)
+    (ROOT / "reportes" / f"{rep['fecha']}.html").write_text(ht, encoding="utf-8")
     # Queda guardado en la base: la tarea de ChatGPT lo lee de acá con el conector de Supabase.
     salud = _salud_md(store)
     store.upsert("reportes_diarios", [{"fecha": hoy().isoformat(), "reporte_md": md, "personalizados_md": pers or "",
-                                       "salud_md": salud, "generado_en": datetime.now(TZ).isoformat()}])
+                                       "salud_md": salud, "reporte_html": ht,
+                                       "generado_en": datetime.now(TZ).isoformat()}])
+    print(f"\nReporte visual: {len(ht) // 1024} KB")
     print("\n== salud\n" + salud)
     print("\nReporte guardado en la tabla reportes_diarios.")
 

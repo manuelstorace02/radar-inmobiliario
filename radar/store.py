@@ -39,7 +39,7 @@ TABLAS: dict[str, list[str]] = {
                  "nuevos", "bajas", "cambios_precio", "errores", "estado", "notas"],
     "estadisticas_diarias": ["fecha", "departamento", "barrio", "operacion", "tipo", "avisos_activos",
                              "mediana_usd", "mediana_usd_m2", "altas", "bajas", "subas_precio", "bajas_precio"],
-    "reportes_diarios": ["fecha", "reporte_md", "personalizados_md", "salud_md", "generado_en"],
+    "reportes_diarios": ["fecha", "reporte_md", "personalizados_md", "salud_md", "reporte_html", "generado_en"],
     "reportes_guardados": ["id", "nombre", "descripcion", "sql", "frecuencia", "solo_si_hay_resultados", "activo",
                            "pedido_por", "ultima_ejecucion", "ultimas_filas", "ultimo_error"],
 }

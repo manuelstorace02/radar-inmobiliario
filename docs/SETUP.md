@@ -76,16 +76,18 @@ Nueva** (o editar la que ya existe):
 
 ```
 Usá el conector Supabase Radar (solo lectura). Buscá en la tabla reportes_diarios la fila de hoy
-(fecha = fecha de hoy en Uruguay). Si no existe, buscá la más reciente y avisá arriba de todo que la corrida
+(fecha = fecha de hoy en Uruguay). Si no existe, usá la más reciente y avisá arriba de todo que la corrida
 de hoy no llegó (hay que mirar la pestaña Actions del repo manuelstorace02/radar-inmobiliario).
 
-Con esa fila armá el mensaje para Manuel, en español rioplatense, para alguien no técnico:
-1) "Lo más importante hoy": 3 a 6 bullets interpretando reporte_md y personalizados_md, con números concretos
-   (qué inmobiliarias se movieron, zonas donde varias inmobiliarias subieron o bajaron precios, propiedades que
+1) Escribí "Lo más importante hoy": 3 a 6 bullets interpretando reporte_md y personalizados_md, con números
+   concretos (qué inmobiliarias se movieron, zonas donde varias subieron o bajaron precios, propiedades que
    desaparecieron de todos lados, misma propiedad con precios muy distintos según dónde se publica).
-2) personalizados_md tal cual, si tiene contenido.
-3) reporte_md tal cual (las tablas).
-4) "Notas técnicas" breves con salud_md.
+2) Tomá la columna reporte_html. Reemplazá TODO lo que está entre <!--RESUMEN--> y <!--/RESUMEN--> por tus
+   bullets en HTML (<li>...</li>, podés usar <b>). No cambies nada más del HTML.
+3) Entregámelo como archivo descargable llamado radar-AAAA-MM-DD.html (creálo con la herramienta de Python /
+   archivos). Si no podés crear archivos, mostralo en Canvas.
+4) En el mensaje del chat poné solo: los bullets, una línea con las notas técnicas importantes de salud_md, y
+   el archivo.
 
 Reglas: usá solo números que estén en esa fila o que consultes en la base; nunca digas "vendido" ni
 "alquilado", decí "desapareció"; si no hubo movimientos relevantes, decilo en una línea.

@@ -61,3 +61,6 @@ create table if not exists reportes_diarios (
 );
 alter table reportes_diarios enable row level security;
 grant all on reportes_diarios to service_role;
+
+-- Reporte visual autocontenido (HTML) que la tarea de ChatGPT le entrega a Manuel como archivo.
+alter table reportes_diarios add column if not exists reporte_html text;
