@@ -66,34 +66,39 @@ eso el trabajo pesado va acá.
 
 Plan gratis de GitHub para repos privados: 2.000 minutos por mes; la corrida diaria usa ~55.
 
-## 6. La tarea programada de ChatGPT (el mensaje para el usuario)
+## 6. Panel web con contraseña (GitHub Pages)
 
-Necesita el conector **Supabase Radar** (solo lectura) conectado en ChatGPT. En **Tareas programadas →
-Nueva** (o editar la que ya existe):
+Cada corrida arma un sitio con el panel (evolución, gráficos) y todos los reportes diarios, **encriptado**:
+sin la contraseña no se puede leer nada aunque el sitio sea público.
 
-- **Repetir:** Cada día — **Hora:** 7:30 (después de que termine la corrida de las 6:00).
-- **Qué debe hacer:**
+1. Repo → **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+2. Repo → **Settings → Secrets and variables → Actions → New repository secret**: `PANEL_CLAVE` = la
+   contraseña del panel (si falta, la corrida NO publica nada).
+3. Dirección: **https://manuelstorace02.github.io/radar-inmobiliario/** (la contraseña se pide una vez y queda
+   recordada en ese navegador).
+
+## 7. La tarea programada de ChatGPT (el mensaje del día)
+
+Necesita el conector **Supabase Radar** (solo lectura). **Repetir:** cada día, **7:30**. **Qué debe hacer:**
 
 ```
 Usá el conector Supabase Radar (solo lectura). Buscá en la tabla reportes_diarios la fila de hoy
 (fecha = fecha de hoy en Uruguay). Si no existe, usá la más reciente y avisá arriba de todo que la corrida
 de hoy no llegó (hay que mirar la pestaña Actions del repo manuelstorace02/radar-inmobiliario).
 
-1) Escribí "Lo más importante hoy": 3 a 6 bullets interpretando reporte_md y personalizados_md, con números
-   concretos (qué inmobiliarias se movieron, zonas donde varias subieron o bajaron precios, propiedades que
-   desaparecieron de todos lados, misma propiedad con precios muy distintos según dónde se publica).
-2) Tomá la columna reporte_html. Reemplazá TODO lo que está entre <!--RESUMEN--> y <!--/RESUMEN--> por tus
-   bullets en HTML (<li>...</li>, podés usar <b>). No cambies nada más del HTML.
-3) Entregámelo como archivo descargable llamado radar-AAAA-MM-DD.html (creálo con la herramienta de Python /
-   archivos). Si no podés crear archivos, mostralo en Canvas.
-4) En el mensaje del chat poné solo: los bullets, una línea con las notas técnicas importantes de salud_md, y
-   el archivo.
+Escribí "Lo más importante hoy": 3 a 6 bullets interpretando reporte_md y personalizados_md, con números
+concretos (qué inmobiliarias se movieron, zonas donde varias subieron o bajaron precios, propiedades que
+desaparecieron de todos lados, misma propiedad con precios muy distintos según dónde se publica).
+Después una línea con lo importante de salud_md, y al final este link:
+Reporte completo y panel: https://manuelstorace02.github.io/radar-inmobiliario/reportes/AAAA-MM-DD.html
+(con la fecha de la fila que usaste).
 
 Reglas: usá solo números que estén en esa fila o que consultes en la base; nunca digas "vendido" ni
-"alquilado", decí "desapareció"; si no hubo movimientos relevantes, decilo en una línea.
+"alquilado", decí "desapareció"; si no hubo movimientos relevantes, decilo en una línea. Si una misma
+propiedad aparece con precios muy distintos, aclaralo como "a revisar": puede ser un error del agrupado.
 ```
 
-## 7. Ver los resultados
+## 8. Ver los resultados
 
 - **Todos los días**: el resultado de la tarea en ChatGPT (con notificación) es el resumen.
 - **Los datos crudos**: Supabase → **Table Editor** (`avisos`, `eventos`, `estadisticas_diarias`...). Se puede

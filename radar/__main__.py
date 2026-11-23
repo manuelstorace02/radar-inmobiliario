@@ -16,6 +16,7 @@
   reportes                  Lista los reportes personalizados
   reportes-correr           Corre los reportes personalizados de hoy
   tipo-cambio               Actualiza el dólar desde una API pública (si falla, deja el anterior)
+  panel [--salida _site]    Arma el sitio web (panel + reportes viejos), encriptado con PANEL_CLAVE
   salud                     Últimas corridas por fuente y barrios sin mapear
 """
 from __future__ import annotations
@@ -30,7 +31,7 @@ from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from . import adapters, dedupe, discover, extract, personalizados, report, scrape
+from . import adapters, dedupe, discover, extract, panel, personalizados, report, scrape
 from .http import Cliente
 from .store import ROOT, abrir
 
@@ -154,6 +155,14 @@ def cmd_diaria(store, a):
     print(f"\nReporte visual: {len(ht) // 1024} KB")
     print("\n== salud\n" + salud)
     print("\nReporte guardado en la tabla reportes_diarios.")
+
+
+def cmd_panel(store, a):
+    clave = os.environ.get("PANEL_CLAVE") or None
+    if not clave and os.environ.get("GITHUB_ACTIONS"):
+        sys.exit("Falta el secreto PANEL_CLAVE: no se publica el panel sin contraseña.")
+    r = panel.generar_sitio(store, Path(a.salida), clave)
+    print(f"panel: {r['reportes']} reportes en {a.salida} ({'encriptado' if r['encriptado'] else 'SIN contraseña'})")
 
 
 def cmd_tipo_cambio(store, a):
@@ -315,13 +324,14 @@ def main(argv=None):
     s.add_argument("--siempre", action="store_true", help="mostrarlo aunque dé 0 filas")
     s = sub.add_parser("reporte-pausar"); s.add_argument("id"); s.add_argument("--activar", action="store_true")
     sub.add_parser("reportes"); sub.add_parser("reportes-correr"); sub.add_parser("tipo-cambio")
+    s = sub.add_parser("panel"); s.add_argument("--salida", default="_site")
     a = p.parse_args(argv)
     store = abrir()
     {"seed": cmd_seed, "correr": cmd_correr, "diaria": cmd_diaria, "dedupe": cmd_dedupe,
      "estadisticas": cmd_estadisticas, "reporte": cmd_reporte, "probar-url": cmd_probar_url,
      "probar-fuente": cmd_probar_fuente, "param": cmd_param, "alias": cmd_alias,
      "consulta": cmd_consulta, "reporte-guardar": cmd_reporte_guardar, "reporte-pausar": cmd_reporte_pausar,
-     "reportes": cmd_reportes_listar, "reportes-correr": cmd_reportes_correr, "tipo-cambio": cmd_tipo_cambio, "salud": cmd_salud}[a.cmd](store, a)
+     "reportes": cmd_reportes_listar, "reportes-correr": cmd_reportes_correr, "tipo-cambio": cmd_tipo_cambio, "panel": cmd_panel, "salud": cmd_salud}[a.cmd](store, a)
 
 
 if __name__ == "__main__":

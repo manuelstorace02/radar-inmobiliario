@@ -54,7 +54,9 @@ autocontenida con un hueco `<!--RESUMEN-->` para el resumen). El log queda en la
 Actions del repo.
 
 A las 07:30 una **tarea programada de ChatGPT** lee esa fila con el conector de Supabase (solo lectura) y le
-escribe al usuario el mensaje del día (formato en la sección 3) y le entrega el reporte visual como archivo.
+escribe al usuario el mensaje del día (formato en la sección 3) con el link al reporte visual. El panel web
+(`python -m radar panel`, `radar/panel.py`) se publica en GitHub Pages encriptado con el secreto `PANEL_CLAVE`:
+https://manuelstorace02.github.io/radar-inmobiliario/
 
 ### Si estás en Codex (chat de trabajo) y te piden revisar o correr algo a mano
 0. **Código al día:** `git fetch origin && git checkout main && git reset --hard origin/main` si la copia está vieja.

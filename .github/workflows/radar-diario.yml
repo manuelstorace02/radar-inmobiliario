@@ -13,6 +13,11 @@ on:
         required: false
         default: ""
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 concurrency:
   group: radar-diario
   cancel-in-progress: false
@@ -56,8 +61,31 @@ jobs:
             python -m radar diaria | tee salida.txt
           fi
 
+      - name: Armar panel web (encriptado con PANEL_CLAVE)
+        if: always()
+        env:
+          PANEL_CLAVE: ${{ secrets.PANEL_CLAVE }}
+        run: python -m radar panel --salida _site
+
+      - name: Subir panel
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
       - name: Resumen en GitHub
         if: always()
         run: |
           cat reportes/*.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
           python -m radar salud >> "$GITHUB_STEP_SUMMARY" 2>&1 || true
+
+  publicar-panel:
+    needs: radar
+    if: always()
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
