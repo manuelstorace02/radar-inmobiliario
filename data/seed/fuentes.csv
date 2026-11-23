@@ -55,3 +55,10 @@ alda,ALDA Group,inmobiliaria,alda,https://www.alda.com.uy,sitemap,/fichapropieda
 antoniomieres,Antonio Mieres Negocios Inmobiliarios,inmobiliaria,antoniomieres,https://antoniomieres.com.uy,sitemap,/propiedad/[^/]+$,,si,3000,1.0,si,nueva,Sitemap con ~1.100 avisos; extractor genérico.
 uruguaysothebysrealty,Uruguay Sotheby's International Realty,inmobiliaria,uruguaysothebysrealty,https://uruguaysothebysrealty.com,sitemap,/propiedad/[^/]+$,,si,3000,1.0,si,nueva,NexusProps; sitemap con ~1.180 avisos; extractor genérico.
 remax,RE/MAX Uruguay,inmobiliaria,remax,https://www.remax.com.uy,sitemap,,,si,3000,1.0,no,pausada,"Responde 403 a nuestro agente (incluso robots.txt): no se scrapea. Probar más adelante o pedir acceso."
+casasymas,Casas y Más,portal,,https://www.casasymas.com.uy,sitemap,/propiedad/\d+-,,si,3000,1.0,si,nueva,"Portal (~39.000 avisos en el sitemap, con anunciante y coordenadas). Carga inicial ~2 semanas al ritmo de 3.000/día."
+prop,PROP,inmobiliaria,prop,https://prop.com.uy,sitemap,/propiedades/[a-z0-9-]+-p\d+$,,si,3000,1.0,si,nueva,Sitemap (~980 avisos); extractor genérico.
+pdepropiedades,PdE Propiedades,inmobiliaria,pdepropiedades,https://pdepropiedades.com,sitemap,/property\?id=\d+$,,si,3000,1.0,si,nueva,Sitemap (~900 avisos); extractor genérico (la ubicación suele faltar).
+dionistuart,Dioni Stuart & Asoc.,inmobiliaria,dionistuart,https://www.dionistuart.com,sitemap,/propiedades/\d+/?$,,si,3000,1.0,si,nueva,Sitemap (~390 avisos); algunos sin precio publicado.
+inmobiliariaprospero,Prospero Negocios Inmobiliarios,inmobiliaria,inmobiliariaprospero,https://inmobiliariaprospero.com.uy,sitemap,"/[a-z0-9-]+/\d{6,}$",,si,3000,1.0,si,nueva,Plataforma Wasi; sitemap (~410 avisos).
+astray,Astray Propiedades,inmobiliaria,astray,https://astray.uy,sitemap,/propiedad/\d+/,,si,3000,1.0,si,nueva,Sitemap (~630 avisos); extractor genérico.
+pauloalvez,Paulo Alvez,inmobiliaria,pauloalvez,https://www.pauloalvez.com.uy,sitemap,/[a-z0-9-]+-[a-z]{2}\d+/$,,si,3000,1.0,si,nueva,Plataforma Sublime Solutions; sitemap (~1.200 avisos).
