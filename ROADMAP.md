@@ -33,10 +33,10 @@ reporte diario).
 - [ ] **Mercado Libre**: usar la API oficial (crear app en developers.mercadolibre.com.uy, guardar credenciales
       como secretos). Su robots.txt bloquea agentes de IA, así que no se scrapea el sitio.
 
-## Fase 3 — Producto para Manuel (mes 2)
+## Fase 3 — Producto para el usuario (mes 2)
 - [x] Vistas `dash_*` y usuario de solo lectura para el dashboard (`sql/dashboard.sql`).
 - [ ] Armar el tablero en **Looker Studio** siguiendo `docs/DASHBOARD.md`.
-- [ ] Alertas personalizadas: barrios/tipologías que le interesan a Manuel arriba de todo en el mensaje.
+- [ ] Alertas personalizadas: barrios/tipologías que le interesan al usuario arriba de todo en el mensaje.
 - [ ] Resumen semanal (lunes) además del diario.
 - [ ] Historial de precios por propiedad (Gallito expone `priceHistory` en sus datos; aprovecharlo).
 

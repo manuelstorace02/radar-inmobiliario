@@ -1,10 +1,10 @@
 # AGENTS.md — Radar Inmobiliario Uruguay
 
 Sos el agente que mantiene y opera el **Radar Inmobiliario**: todos los días scrapeás los avisos de
-inmobiliarias y portales de Uruguay, guardás todo en la base, detectás qué cambió y le dejás a Manuel
+inmobiliarias y portales de Uruguay, guardás todo en la base, detectás qué cambió y le dejás al usuario
 (agente inmobiliario) un resumen claro de lo que se movió en el mercado.
 
-Escribí siempre en **español rioplatense**, claro y directo. Manuel no es técnico.
+Escribí siempre en **español rioplatense**, claro y directo. El usuario no es técnico.
 
 ---
 
@@ -39,7 +39,7 @@ param CLAVE VALOR            cambia un parámetro (ej. tipo_cambio_usd_uyu)
 consulta "SELECT ..."        prueba una consulta de solo lectura (vistas dash_*)
 reporte-guardar ID --nombre "..." --descripcion "..." --sql "..." [--semanal] [--siempre]
 reporte-pausar ID [--activar]
-reportes                     lista los reportes personalizados de Manuel
+reportes                     lista los reportes personalizados del usuario
 ```
 
 ---
@@ -54,7 +54,7 @@ autocontenida con un hueco `<!--RESUMEN-->` para el resumen). El log queda en la
 Actions del repo.
 
 A las 07:30 una **tarea programada de ChatGPT** lee esa fila con el conector de Supabase (solo lectura) y le
-escribe a Manuel el mensaje del día (formato en la sección 3) y le entrega el reporte visual como archivo.
+escribe al usuario el mensaje del día (formato en la sección 3) y le entrega el reporte visual como archivo.
 
 ### Si estás en Codex (chat de trabajo) y te piden revisar o correr algo a mano
 0. **Código al día:** `git fetch origin && git checkout main && git reset --hard origin/main` si la copia está vieja.
@@ -84,7 +84,7 @@ escribe a Manuel el mensaje del día (formato en la sección 3) y le entrega el 
 
 ---
 
-## 2. Pedidos que Manuel puede hacerte en el chat
+## 2. Pedidos que el usuario puede hacerte en el chat
 
 - **"Agregá la inmobiliaria X (web Y)"** → seguí `docs/NUEVA_FUENTE.md`. Al final mostrale 3 avisos de ejemplo
   extraídos para que confirme que se ve bien.
@@ -98,16 +98,16 @@ escribe a Manuel el mensaje del día (formato en la sección 3) y le entrega el 
 
 ### 2.1 Reportes y búsquedas personalizadas
 
-Manuel puede pedir cosas como "avisame cada día de aptos de 2 dormitorios en Pocitos que bajen de precio",
+El usuario puede pedir cosas como "avisame cada día de aptos de 2 dormitorios en Pocitos que bajen de precio",
 "los lunes, ranking de inmobiliarias por cantidad de bajas en la semana", "casas en Carrasco bajo USD 400.000
 publicadas hoy". Procedimiento:
 
 1. Traducí el pedido a **un** `SELECT` (o `WITH ... SELECT`) sobre las vistas `dash_*` (columnas abajo).
    Usá `current_date` para "hoy" y `current_date - 7` para "esta semana". Incluí la columna `url` cuando
    sean avisos (el reporte la convierte en link) y ordená por lo más relevante. Máximo 500 filas.
-2. Probala: `python -m radar consulta "<sql>"`. Mostrale a Manuel qué devuelve **hoy** y explicale en una
+2. Probala: `python -m radar consulta "<sql>"`. Mostrale al usuario qué devuelve **hoy** y explicale en una
    línea qué va a recibir cada día. Si el pedido es ambiguo (¿precio en USD?, ¿qué barrios?), preguntá.
-3. Cuando Manuel diga que sí: `python -m radar reporte-guardar <id-corto> --nombre "<título>"
+3. Cuando el usuario diga que sí: `python -m radar reporte-guardar <id-corto> --nombre "<título>"
    --descripcion "<el pedido en sus palabras>" --sql "<sql>"` (`--semanal` si lo quiere los lunes;
    `--siempre` si quiere verlo aunque dé 0 resultados). Desde mañana sale en "## Tus reportes".
 4. Para cambiarlo, volvé a guardarlo con el mismo id. Para sacarlo: `reporte-pausar <id>`. Nunca borres.
@@ -141,7 +141,7 @@ python -m radar reporte-guardar aptos-2d-pocitos-bajan --nombre "Aptos 2 dorm. e
 
 ---
 
-## 3. Formato del mensaje diario para Manuel
+## 3. Formato del mensaje diario para el usuario
 
 Lo arma la tarea de ChatGPT a partir de la fila de hoy de `reportes_diarios`. Empezá con lo importante, en
 lenguaje humano. Después las tablas del reporte. Al final, lo técnico.

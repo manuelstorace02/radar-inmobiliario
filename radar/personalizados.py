@@ -39,7 +39,7 @@ def probar(store: Store, sql: str) -> list[dict]:
 
 
 def guardar(store: Store, id_: str, nombre: str, descripcion: str, sql: str, frecuencia: str = "diaria",
-            solo_si_hay_resultados: bool = True, pedido_por: str = "Manuel") -> int:
+            solo_si_hay_resultados: bool = True, pedido_por: str = "usuario") -> int:
     filas = store.consulta(sql)  # si la consulta falla, no se guarda
     store.upsert("reportes_guardados", [{
         "id": id_, "nombre": nombre, "descripcion": descripcion, "sql": sql, "frecuencia": frecuencia,

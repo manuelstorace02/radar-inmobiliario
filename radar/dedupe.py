@@ -54,6 +54,13 @@ def score(a: dict, b: dict) -> float:
             return 0
     ia_, ib_ = a.get("_img"), b.get("_img")
     if (ia_ if ia_ is not None else _img_keys(a)) & (ib_ if ib_ is not None else _img_keys(b)):
+        # Foto en común: fuerte, pero las inmobiliarias a veces reusan fotos genéricas (la playa, el barrio,
+        # un render). Si dormitorios o precio no cierran, queda como dudoso y no se agrupa.
+        if a.get("dormitorios") is not None and b.get("dormitorios") is not None and a["dormitorios"] != b["dormitorios"]:
+            return 0.7
+        pa, pb = a.get("precio_usd"), b.get("precio_usd")
+        if pa and pb and max(float(pa), float(pb)) / min(float(pa), float(pb)) > 1.5:
+            return 0.7
         return 1.0
     d = _dist_m(a, b)
     if d is not None and d < 30 and a.get("dormitorios") == b.get("dormitorios"):

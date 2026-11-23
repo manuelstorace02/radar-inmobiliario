@@ -1,6 +1,6 @@
 # Instalación paso a paso
 
-Todo en la nube: GitHub (código), Supabase (base de datos) y Codex en la cuenta de ChatGPT de Manuel
+Todo en la nube: GitHub (código), Supabase (base de datos) y Codex en la cuenta de ChatGPT del usuario
 (agente diario). No hace falta ninguna compu prendida.
 
 ## 1. Subir este repo a GitHub
@@ -13,7 +13,7 @@ Todo en la nube: GitHub (código), Supabase (base de datos) y Codex en la cuenta
 
 ## 2. Crear la base en Supabase (gratis)
 
-1. Entrá a **supabase.com** y creá una cuenta (podés entrar con el GitHub de Manuel).
+1. Entrá a **supabase.com** y creá una cuenta (podés entrar con el GitHub del usuario).
 2. **New project**: nombre `radar-inmobiliario`, región **South America (São Paulo)**, generá una contraseña y
    guardala en un lugar seguro.
 3. Cuando termine de crearse: menú izquierdo → **SQL Editor** → **New query** → pegá todo el contenido de
@@ -66,7 +66,7 @@ eso el trabajo pesado va acá.
 
 Plan gratis de GitHub para repos privados: 2.000 minutos por mes; la corrida diaria usa ~55.
 
-## 6. La tarea programada de ChatGPT (el mensaje para Manuel)
+## 6. La tarea programada de ChatGPT (el mensaje para el usuario)
 
 Necesita el conector **Supabase Radar** (solo lectura) conectado en ChatGPT. En **Tareas programadas →
 Nueva** (o editar la que ya existe):

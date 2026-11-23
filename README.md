@@ -21,7 +21,7 @@ GitHub Actions (06:00)                    Supabase
        4. misma propiedad entre fuentes     Storage       foto diaria completa (.jsonl.gz) y reportes
        5. estadísticas + reporte            reportes_diarios  el reporte del día
                                                   │
-ChatGPT, tarea programada (07:30) ◄── conector ───┘   lee el reporte y le escribe a Manuel
+ChatGPT, tarea programada (07:30) ◄── conector ───┘   lee el reporte y le escribe al usuario
 Codex (chat de trabajo)               arreglos, fuentes nuevas, reportes personalizados
 ```
 

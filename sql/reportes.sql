@@ -1,19 +1,19 @@
--- Radar Inmobiliario — reportes y búsquedas personalizadas de Manuel.
+-- Radar Inmobiliario — reportes y búsquedas personalizadas del usuario.
 -- Se corre en Supabase > SQL Editor DESPUÉS de schema.sql y dashboard.sql. Es idempotente.
 --
--- Manuel le pide al agente "quiero que todos los días me muestres X". El agente escribe la consulta SQL,
--- la prueba, se la muestra a Manuel y, si le sirve, la guarda acá. La rutina diaria corre todas las
+-- El usuario le pide al agente "quiero que todos los días me muestres X". El agente escribe la consulta SQL,
+-- la prueba, se la muestra al usuario y, si le sirve, la guarda acá. La rutina diaria corre todas las
 -- activas y las agrega al mensaje de la mañana.
 
 create table if not exists reportes_guardados (
   id                  text primary key,            -- slug: 'aptos-2d-pocitos-bajan'
-  nombre              text not null,               -- título que ve Manuel
-  descripcion         text,                        -- qué busca, en palabras de Manuel
+  nombre              text not null,               -- título que ve el usuario
+  descripcion         text,                        -- qué busca, en palabras del usuario
   sql                 text not null,               -- un SELECT sobre las vistas dash_* (ver AGENTS.md)
   frecuencia          text not null default 'diaria' check (frecuencia in ('diaria','semanal')),
   solo_si_hay_resultados boolean default true,     -- si da 0 filas, no se muestra
   activo              boolean default true,
-  pedido_por          text default 'Manuel',
+  pedido_por          text default 'usuario',
   creado_en           timestamptz default now(),
   ultima_ejecucion    timestamptz,
   ultimas_filas       int,
@@ -51,7 +51,7 @@ revoke all on function radar_consulta(text) from public, anon, authenticated;
 grant execute on function radar_consulta(text) to service_role;
 
 -- Reporte de cada día: lo escribe la corrida automática (GitHub Actions) y lo lee la tarea de ChatGPT
--- con el conector de Supabase para armar el mensaje de Manuel.
+-- con el conector de Supabase para armar el mensaje del usuario.
 create table if not exists reportes_diarios (
   fecha             date primary key,
   reporte_md        text,          -- reporte general (tablas)
@@ -62,5 +62,5 @@ create table if not exists reportes_diarios (
 alter table reportes_diarios enable row level security;
 grant all on reportes_diarios to service_role;
 
--- Reporte visual autocontenido (HTML) que la tarea de ChatGPT le entrega a Manuel como archivo.
+-- Reporte visual autocontenido (HTML) que la tarea de ChatGPT le entrega al usuario como archivo.
 alter table reportes_diarios add column if not exists reporte_html text;

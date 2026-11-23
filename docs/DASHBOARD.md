@@ -1,14 +1,14 @@
 # Dashboard en Looker Studio
 
 Un tablero que se actualiza solo con lo que el radar guarda cada día en Supabase. Gratis, con la cuenta de
-Google de Manuel, y se puede abrir desde el celular.
+Google del usuario, y se puede abrir desde el celular.
 
 ## 1. Preparar la base (una vez, 2 minutos)
 
 1. Abrí `sql/dashboard.sql` y copiá todo.
 2. Supabase → **SQL Editor** → **New query** → pegá.
 3. **Antes de correrlo**, reemplazá las DOS apariciones de `CAMBIAR_ESTA_CLAVE` por una contraseña larga
-   (letras y números, sin comillas ni espacios). Guardala en las notas de Manuel: es la del dashboard.
+   (letras y números, sin comillas ni espacios). Guardala en las notas del usuario: es la del dashboard.
 4. **Run**. Tiene que decir "Success".
 
 Esto crea 5 vistas (`dash_avisos_activos`, `dash_evolucion_barrio`, `dash_eventos`, `dash_misma_propiedad`,
@@ -30,7 +30,7 @@ Supabase → botón **Connect** (arriba) → pestaña **Direct / Connection stri
 
 ## 3. Conectar Looker Studio
 
-1. Entrá a **lookerstudio.google.com** con la cuenta de Google de Manuel.
+1. Entrá a **lookerstudio.google.com** con la cuenta de Google del usuario.
 2. **Crear → Fuente de datos** → conector **PostgreSQL**.
 3. Completá con la tabla del paso 2. Marcá **Habilitar SSL** (si pide certificado, probá primero sin él).
 4. **Autenticar** → elegí la vista **`dash_avisos_activos`** → **Conectar** → **Crear informe**.
@@ -52,5 +52,5 @@ Tip: en la configuración de la fuente de datos, poné **Actualización de datos
 
 ## 5. Compartir
 
-**Compartir** (arriba a la derecha) → agregá el mail de Manuel o generá un link "cualquiera con el enlace puede
+**Compartir** (arriba a la derecha) → agregá el mail del usuario o generá un link "cualquiera con el enlace puede
 ver" si querés abrirlo sin loguearte. Desde el celular se abre en el navegador.
