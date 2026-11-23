@@ -30,7 +30,12 @@ reporte diario).
 - [x] Detectar plataformas comunes (`docs/INMOBILIARIAS.md`): TeraCRM 42, nai 14, Tokko 12, Houzez 7, Cliksi 5.
 - [x] **TeraCRM** (`radar/adapters/tera.py`, 23/11): 34 inmobiliarias activas (sobre todo Punta del Este).
       8 usan una plantilla Tera más nueva (`/propiedades`, `ficha.php`): quedan pausadas, falta una variante.
-- [ ] Siguientes adapters de plataforma: Tokko Broker, nai, WordPress/Houzez (API REST), Cliksi.
+- [x] Adapters de plataforma (23/11): TeraCRM 42/42, nai 63, Tokko 10/12, WordPress 11/13, Xintel 5/5 + 11 webs
+      propias por sitemap y el portal Casas y Más. ~150 fuentes activas.
+- [ ] Bloqueadas (no se esquiva): Cliksi (Vizcaya, Coldwell Banker, Toribio Achával, Smehaus, Punto Inmobiliario)
+      y RE/MAX responden 403 a bots; Century 21 prohíbe sus listados en robots. Pedir acceso.
+- [ ] Pendientes: KW Uruguay (paginado ASP.NET por POST), Nancy Gutierrez (WP con app propia), Kaplan (nai,
+      unidades dentro de proyectos), Gasalla, Broker (Lovable), Capital Real Estate, Imperium, Golf.
 - [ ] Reporte "web propia vs. portal": misma propiedad con precio distinto en la web de la inmobiliaria y en
       los portales (ya lo calcula `v_propiedades_multifuente`; falta tener las webs cargadas).
 - [ ] **Mercado Libre**: usar la API oficial (crear app en developers.mercadolibre.com.uy, guardar credenciales
