@@ -50,3 +50,8 @@ tera-tesouro,Tesouro,inmobiliaria,tesouro,https://www.tesouro.com.uy,adapter,,,s
 tera-lopezbesozzi,LOPEZ BESOZZI Negocios Inmobiliarios,inmobiliaria,lopezbesozzi,https://www.lopezbesozzi.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-lupa,Lupa Real Estate,inmobiliaria,lupa,https://www.lupa.com.uy,adapter,,,si,3000,1.0,no,pausada,"Web TeraCRM con plantilla nueva (/propiedades, ficha.php): el adapter tera no la lee todavía."
 tera-birnbachrealestate,Birnbach Real Estate,inmobiliaria,birnbachrealestate,https://birnbachrealestate.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
+caetano,Caetano Negocios Inmobiliarios,inmobiliaria,caetano,https://caetano.com.uy,sitemap,/propiedades/[^/]+-\d+-[a-z]+$,,si,3000,1.0,si,nueva,Sitemap con ~5.200 avisos; extractor genérico.
+alda,ALDA Group,inmobiliaria,alda,https://www.alda.com.uy,sitemap,/fichapropiedad/,,si,3000,1.0,si,nueva,sitemap-fichas.xml (~1.900 fichas); extractor genérico.
+antoniomieres,Antonio Mieres Negocios Inmobiliarios,inmobiliaria,antoniomieres,https://antoniomieres.com.uy,sitemap,/propiedad/[^/]+$,,si,3000,1.0,si,nueva,Sitemap con ~1.100 avisos; extractor genérico.
+uruguaysothebysrealty,Uruguay Sotheby's International Realty,inmobiliaria,uruguaysothebysrealty,https://uruguaysothebysrealty.com,sitemap,/propiedad/[^/]+$,,si,3000,1.0,si,nueva,NexusProps; sitemap con ~1.180 avisos; extractor genérico.
+remax,RE/MAX Uruguay,inmobiliaria,remax,https://www.remax.com.uy,sitemap,,,si,3000,1.0,no,pausada,"Responde 403 a nuestro agente (incluso robots.txt): no se scrapea. Probar más adelante o pedir acceso."
