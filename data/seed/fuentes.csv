@@ -136,3 +136,16 @@ nai-virginiarubio,Virginia Rubio Negocios Inmobiliarios,inmobiliaria,virginiarub
 nai-virtualhome,Virtualhome,inmobiliaria,virtualhome,https://virtualhome.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~43 avisos (nov-2026)
 nai-xerca,Xerca Homes & Lifestyle,inmobiliaria,xerca,https://xerca.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~37 avisos (nov-2026)
 nai-kaplaninmobiliaria,Kaplan Inmobiliaria,inmobiliaria,kaplaninmobiliaria,https://kaplaninmobiliaria.com,adapter,,,no,3000,1.0,no,pausada,Web nai pero solo de proyectos: /proyectos-propiedades lista edificios y las unidades están en /propiedades/.../agr-N; el adapter no la recorre todavía
+wp-alpharealtors,Alpha Realtors (web),inmobiliaria,alpharealtors,https://www.alpharealtors.uy,adapter,,,no,3000,1.0,si,nueva,"WP Houzez (2clics), API REST: ~1.870 avisos en ~1,5 min; completo confiable"
+wp-workplace,Workplace Real Estate (web),inmobiliaria,workplace,https://www.workplace.com.uy,adapter,,,no,3000,1.0,si,nueva,"WP Houzez (2clics), API REST: ~450 avisos en 25 s"
+wp-platinuminmobiliaria,Platinum Inmobiliaria (web),inmobiliaria,platinuminmobiliaria,https://www.platinuminmobiliaria.com,adapter,,,no,3000,1.0,si,nueva,"WP Houzez (2clics), API REST: ~415 avisos en 25 s"
+wp-urbankey,UrbanKey (web),inmobiliaria,urbankey,https://www.urbankey.com.uy,adapter,,,no,3000,1.0,si,nueva,"WP Houzez (2clics), API REST: ~250 avisos en 15 s"
+wp-italianegociosinmobiliarios,Italia Negocios Inmobiliarios (web),inmobiliaria,italianegociosinmobiliarios,https://italianegociosinmobiliarios.com.uy,adapter,,,no,3000,1.0,si,nueva,"WP Houzez, API REST: ~315 avisos en 25 s"
+wp-cristinaottonello,Cristina Ottonello (web),inmobiliaria,cristinaottonello,https://cristinaottonello.com,adapter,,,no,3000,1.0,si,nueva,"WP Houzez, API REST: ~145 avisos en 15 s; sin moneda cargada (se asume USD salvo alquiler >= 10.000)"
+wp-location,Location Real Estate (web),inmobiliaria,location,https://www.location.uy,adapter,,,no,3000,1.0,si,nueva,"WP Houzez con API REST cerrada (401): sitemap + fichas, ~730 avisos en ~24 min"
+wp-century21369,Century 21 369 (web),inmobiliaria,century21369,https://century21369.com,adapter,,,no,3000,1.0,si,nueva,"WP WpResidence (sin precio en la API): sitemap + fichas, ~480 avisos en ~18 min"
+wp-bostonclarks,Boston Clarks (web),inmobiliaria,bostonclarks,https://bostonclarks.com.uy,adapter,,,no,3000,1.0,si,nueva,"WP Estatik: sitemap + fichas, ~175 avisos en ~7,5 min"
+wp-metros,Metros (web),inmobiliaria,metros,https://metros.uy,adapter,,,no,3000,1.0,si,nueva,"WP Estatik: sitemap + fichas, ~64 avisos en ~4 min"
+wp-uruhaus,Uruhaus (web),inmobiliaria,uruhaus,https://uruhaus.com,adapter,,,no,3000,1.0,si,nueva,"WP Divi (CPT propiedades): sitemap + fichas, ~440 avisos en ~9 min; fichas sin barrio (sale del título)"
+wp-nancygutierrez,Nancy Gutierrez Propiedades (web),inmobiliaria,nancygutierrez,https://nancygutierrez.com.uy,adapter,,,no,3000,1.0,no,pausada,"WP con app propia (/propiedad/ID/...), sin API ni sitemap de avisos; listado de 9 por página (~180 páginas): necesita adapter propio"
+wp-artepropiedades,Arte Propiedades (web),inmobiliaria,artepropiedades,https://artepropiedades.com.uy,adapter,,,no,3000,1.0,no,pausada,"WP Salient: portfolio de emprendimientos de pozo, sin avisos individuales ni sitemap"
