@@ -72,3 +72,67 @@ cliksi-toribioachaval,Toribio Achával Uruguay,inmobiliaria,toribioachaval,https
 cliksi-puntoinmobiliario,Punto Inmobiliario,inmobiliaria,puntoinmobiliario,https://www.puntoinmobiliario.com.uy,adapter,,,no,3000,1.0,no,pausada,"Web Cliksi: 403 del balanceador AWS a nuestro User-Agent (filtro de bots); sin adapter"
 cliksi-smehaus,Smehaus Propiedades,inmobiliaria,smehaus,https://smehaus.uy,adapter,,,no,3000,1.0,no,pausada,"Web Cliksi: 403 del balanceador AWS a nuestro User-Agent (filtro de bots); sin adapter"
 cliksi-coldwellbanker,Coldwell Banker Uruguay,inmobiliaria,coldwellbanker,https://coldwellbanker.com.uy,adapter,,,no,3000,1.0,no,pausada,"Web Cliksi: 403 del balanceador AWS a nuestro User-Agent (filtro de bots); sin adapter"
+nai-kosak,Kosak Inversiones Inmobiliarias,inmobiliaria,kosak,https://kosak.com.uy,adapter,,,no,3000,1.0,si,nueva,"Web nai/Sodio (radar/adapters/nai.py); ~966 avisos (nov-2026); tarjetas 12/pág (~85 pág, ~2 min)"
+nai-monymar,Monymar,inmobiliaria,monymar,https://monymar.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~863 avisos (nov-2026); mapa_listado JSON: 1 pedido; robots Crawl-delay 30
+nai-equilibriopropiedades,Equilibrio,inmobiliaria,equilibriopropiedades,https://www.equilibriopropiedades.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~760 avisos (nov-2026); mapa_listado JSON: 1 pedido
+nai-vargasinmobiliaria,Vargas,inmobiliaria,vargasinmobiliaria,https://vargasinmobiliaria.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~659 avisos (nov-2026); tarjetas; IDs con letra (P9342)
+nai-casavictorica,Casa Victorica,inmobiliaria,casavictorica,https://casavictorica.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~363 avisos (nov-2026); plantilla propia: /propiedades/pagina/N
+nai-pointer,POINTER - Mejores negocios inmobiliarios.,inmobiliaria,pointer,https://pointer.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~635 avisos (nov-2026); plantilla propia: /propiedades?page=N
+nai-paulodelrio,Paulo del Río Servicios inmobiliarios,inmobiliaria,paulodelrio,https://paulodelrio.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~350 avisos (nov-2026); tarjetas; robots Crawl-delay 30 (corrida lenta)
+nai-estudiosm,Estudio SM,inmobiliaria,estudiosm,https://estudiosm.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~260 avisos (nov-2026); tarjetas
+nai-sou,Sou Negocios Inmobiliarios,inmobiliaria,sou,https://sou.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~315 avisos (nov-2026); tarjetas
+nai-pallaresbruzzone,PALLARES BRUZZONE,inmobiliaria,pallaresbruzzone,https://pallaresbruzzone.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~246 avisos (nov-2026); tarjetas
+nai-vonhaus,Vonhaus Real Estate,inmobiliaria,vonhaus,https://www.vonhaus.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~210 avisos (nov-2026); mapa_listado JSON: 1 pedido
+nai-loopinmobiliaria,LOOP INMOBILIARIA,inmobiliaria,loopinmobiliaria,https://loopinmobiliaria.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~201 avisos (nov-2026); tarjetas
+nai-mercedesarocena,Mercedes Arocena Bienes Raíces,inmobiliaria,mercedesarocena,https://mercedesarocena.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~193 avisos (nov-2026); tarjetas
+nai-yasminecoccaro,YASMINE COCCARO,inmobiliaria,yasminecoccaro,https://yasminecoccaro.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~152 avisos (nov-2026); plantilla vieja; robots Crawl-delay 30 (~5 min)
+nai-altosur,AltoSur Bienes Raíces,inmobiliaria,altosur,https://altosur.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~60 avisos (nov-2026)
+nai-amavis,Amavis Inmobiliaria,inmobiliaria,amavis,https://amavis.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~23 avisos (nov-2026); robots Crawl-delay 30
+nai-ananikian,Ananikian Negocios Inmobiliarios,inmobiliaria,ananikian,https://ananikian.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~108 avisos (nov-2026); robots Crawl-delay 30
+nai-arteagahill,Arteaga Hill Colón,inmobiliaria,arteagahill,https://arteagahill.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~19 avisos (nov-2026)
+nai-bartke,Bartke Inmobiliaria,inmobiliaria,bartke,https://bartke.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~32 avisos (nov-2026)
+nai-beyhaut,Beyhaut Propiedades,inmobiliaria,beyhaut,https://beyhaut.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~163 avisos (nov-2026)
+nai-biarritz,Biarritz Propiedades,inmobiliaria,biarritz,https://biarritz.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~51 avisos (nov-2026)
+nai-bienseguro,Bien Seguro,inmobiliaria,bienseguro,https://bienseguro.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~167 avisos (nov-2026)
+nai-bym,B&M Bienes Raíces,inmobiliaria,bym,https://bym.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~24 avisos (nov-2026)
+nai-casatroja,Casatroja Negocios Inmobiliarios,inmobiliaria,casatroja,https://casatroja.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~42 avisos (nov-2026)
+nai-crisciblanco,Crisci Blanco Propiedades,inmobiliaria,crisciblanco,https://crisciblanco.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~437 avisos (nov-2026)
+nai-destinosur,Destino SUR,inmobiliaria,destinosur,https://destinosur.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~94 avisos (nov-2026)
+nai-doldan,Doldán Propiedades,inmobiliaria,doldan,https://doldan.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~16 avisos (nov-2026)
+nai-entorno,Entorno Negocios Inmobiliarios,inmobiliaria,entorno,https://entorno.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~95 avisos (nov-2026); mapa_listado JSON (1 pedido)
+nai-etcheverryinmobiliaria,Etcheverry Inmobiliaria,inmobiliaria,etcheverryinmobiliaria,https://etcheverryinmobiliaria.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~41 avisos (nov-2026)
+nai-fortiahouse,Fortia House Negocios Inmobiliarios,inmobiliaria,fortiahouse,https://fortiahouse.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~38 avisos (nov-2026)
+nai-gabal,Gabal Inmobiliaria,inmobiliaria,gabal,https://gabal.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~65 avisos (nov-2026); mapa_listado JSON (1 pedido)
+nai-gianellipropiedades,Gianelli Propiedades,inmobiliaria,gianellipropiedades,https://gianellipropiedades.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~36 avisos (nov-2026)
+nai-gularte,Gularte Negocios Inmobiliarios,inmobiliaria,gularte,https://gularte.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~50 avisos (nov-2026)
+nai-gutierrezlarre,Gutiérrez Larre Bienes Raíces,inmobiliaria,gutierrezlarre,https://gutierrezlarre.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~72 avisos (nov-2026)
+nai-hardoy,Inmobiliaria Hardoy,inmobiliaria,hardoy,https://hardoy.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~239 avisos (nov-2026)
+nai-heimat,Heimat Negocios Inmobiliarios,inmobiliaria,heimat,https://heimat.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~31 avisos (nov-2026)
+nai-inmobiliaria18,Inmobiliaria 18,inmobiliaria,inmobiliaria18,https://inmobiliaria18.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~23 avisos (nov-2026)
+nai-iocco,Dante y Gustavo Iocco,inmobiliaria,iocco,https://iocco.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~142 avisos (nov-2026)
+nai-irazabal,Irazabal Propiedades,inmobiliaria,irazabal,https://irazabal.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~73 avisos (nov-2026)
+nai-krpropiedades,KR Propiedades,inmobiliaria,krpropiedades,https://krpropiedades.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~13 avisos (nov-2026); robots Crawl-delay 30
+nai-lannis,Lannis Negocios Inmobiliarios,inmobiliaria,lannis,https://lannis.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~87 avisos (nov-2026); mapa_listado JSON (1 pedido)
+nai-leticiavecino,Leticia Vecino Propiedades,inmobiliaria,leticiavecino,https://leticiavecino.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~203 avisos (nov-2026)
+nai-liveuruguayrealty,Live Uruguay Realty,inmobiliaria,liveuruguayrealty,https://liveuruguayrealty.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~137 avisos (nov-2026); robots Crawl-delay 30
+nai-marohaus,Maro Haus & Asociados,inmobiliaria,marohaus,https://marohaus.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~74 avisos (nov-2026)
+nai-megaprops,Megaprops,inmobiliaria,megaprops,https://megaprops.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~66 avisos (nov-2026)
+nai-meikle,Alejandra Meikle Negocios Inmobiliarios,inmobiliaria,meikle,https://meikle.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~66 avisos (nov-2026)
+nai-merabienesraices,Mera Bienes Raíces,inmobiliaria,merabienesraices,https://merabienesraices.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~33 avisos (nov-2026); robots Crawl-delay 30
+nai-montevernon,Monte Vernon,inmobiliaria,montevernon,https://montevernon.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~29 avisos (nov-2026)
+nai-opcionbuceo,Opción Buceo Negocios Inmobiliarios,inmobiliaria,opcionbuceo,https://opcionbuceo.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~70 avisos (nov-2026); mapa_listado JSON (1 pedido)
+nai-parietti,Parietti Negocios Inmobiliarios,inmobiliaria,parietti,https://parietti.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~71 avisos (nov-2026)
+nai-parodi,Parodi Inmobiliaria,inmobiliaria,parodi,https://parodi.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~50 avisos (nov-2026); robots Crawl-delay 30
+nai-pilarcibils,Pilar Cibils Negocios Inmobiliarios,inmobiliaria,pilarcibils,https://pilarcibils.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~4 avisos (nov-2026); robots Crawl-delay 30
+nai-propicks,Inmobiliaria Propicks,inmobiliaria,propicks,https://propicks.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~132 avisos (nov-2026)
+nai-santerini,Santerini Negocios Inmobiliarios,inmobiliaria,santerini,https://santerini.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~35 avisos (nov-2026)
+nai-sienra,Sienra,inmobiliaria,sienra,https://sienra.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~121 avisos (nov-2026); robots Crawl-delay 30
+nai-silvergroup,Silver Group Negocios Inmobiliarios,inmobiliaria,silvergroup,https://silvergroup.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~105 avisos (nov-2026); mapa_listado JSON (1 pedido)
+nai-starhaus,Starhaus,inmobiliaria,starhaus,https://starhaus.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~16 avisos (nov-2026)
+nai-surmontes,Surmontes BH,inmobiliaria,surmontes,https://surmontes.com,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~99 avisos (nov-2026)
+nai-urrestarazu,Urrestarazu Inversiones Inmobiliarias,inmobiliaria,urrestarazu,https://urrestarazu.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~52 avisos (nov-2026); robots Crawl-delay 30
+nai-varelatorrado,Varela Torrado,inmobiliaria,varelatorrado,https://varelatorrado.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~22 avisos (nov-2026); robots Crawl-delay 30
+nai-virginiarubio,Virginia Rubio Negocios Inmobiliarios,inmobiliaria,virginiarubio,https://virginiarubio.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~18 avisos (nov-2026); robots Crawl-delay 30
+nai-virtualhome,Virtualhome,inmobiliaria,virtualhome,https://virtualhome.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~43 avisos (nov-2026)
+nai-xerca,Xerca Homes & Lifestyle,inmobiliaria,xerca,https://xerca.com.uy,adapter,,,no,3000,1.0,si,nueva,Web nai/Sodio (radar/adapters/nai.py); ~37 avisos (nov-2026)
+nai-kaplaninmobiliaria,Kaplan Inmobiliaria,inmobiliaria,kaplaninmobiliaria,https://kaplaninmobiliaria.com,adapter,,,no,3000,1.0,no,pausada,Web nai pero solo de proyectos: /proyectos-propiedades lista edificios y las unidades están en /propiedades/.../agr-N; el adapter no la recorre todavía
