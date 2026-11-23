@@ -1,10 +1,11 @@
 name: Radar diario
 
-# Corre todos los días a las 06:00 de Uruguay (09:00 UTC) en la nube de GitHub.
+# Programada 04:00 de Uruguay (07:00 UTC); GitHub suele arrancarla 30-60 min tarde y dura ~50 min,
+# así que termina antes de las 06:00. Corre en la nube de GitHub.
 # También se puede correr a mano: pestaña Actions > Radar diario > Run workflow.
 on:
   schedule:
-    - cron: "0 9 * * *"
+    - cron: "0 7 * * *"
   workflow_dispatch:
     inputs:
       max_urls:
