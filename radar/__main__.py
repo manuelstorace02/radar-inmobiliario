@@ -240,6 +240,14 @@ def cmd_probar_fuente(store, a):
         print(f"URLs de avisos descubiertas: {c['urls_descubiertas']}  {c.get('notas') or ''}")
         for u in c.get("muestra", [])[:10]:
             print("  ", u)
+        if c.get("muestra_datos"):  # modo listado completo: los datos ya vienen del listado
+            print("(modo listado completo: datos tomados de las páginas de búsqueda, 2 páginas por sección)")
+            for d in c["muestra_datos"][:a.n]:
+                av = scrape.armar_aviso(dict(d), fuente, ctx)
+                print(f"\n{d['url']}\n  " + " | ".join(f"{k}={av.get(k)}" for k in
+                      ("operacion", "tipo", "departamento", "barrio", "precio", "moneda", "precio_usd", "m2_edificados",
+                       "dormitorios", "banos", "anunciante")) + f"\n  titulo={av.get('titulo')}\n  ubicacion_raw={av.get('barrio_raw')}")
+            return
         cli = Cliente(delay_seg=float(fuente.get("delay_seg") or 1.5))
         ad = adapters.cargar(fuente["id"])
         for u in c.get("muestra", [])[:a.n]:

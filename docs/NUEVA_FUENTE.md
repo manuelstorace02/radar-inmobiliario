@@ -51,6 +51,8 @@ Copiá `radar/adapters/_ejemplo.py` a `radar/adapters/<id con _ en vez de ->.py`
 
 - `es_aviso(url)` si el patrón de URL no alcanza.
 - `extraer(html, url, generico)` para corregir campos (precio, ubicación, anunciante, id_externo...).
+- `async listar(cli, fuente, limite_ts, max_paginas=None)` → `({url: datos}, completo)` cuando las páginas de
+  listado ya traen todos los datos (ej. InfoCasas): no se abre cada aviso y se ve todo el stock cada día.
 - `async descubrir(cli, fuente)` si el descubrimiento es especial (API, listados con JSON, etc.). Puede devolver
   un `set` de URLs o un `dict {url: lastmod}`.
 

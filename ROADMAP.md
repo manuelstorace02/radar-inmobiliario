@@ -13,9 +13,8 @@ reporte diario).
 - [ ] Primera corrida manual supervisada.
 
 ## Fase 1 — Cobertura de portales (semanas 1–2)
-- [ ] **InfoCasas**: sus sitemaps de `properties` son de *búsquedas* (`/venta/inmuebles/<depto>`), no de avisos.
-      Hacer `radar/adapters/infocasas.py` con `descubrir()` que recorra esos listados paginados y junte las
-      URLs de avisos. Ojo: robots.txt prohíbe URLs de búsqueda con `-y-` (`/venta/*-y-*`); usar solo las simples.
+- [x] **InfoCasas** en modo "listado completo" (`radar/adapters/infocasas.py`): ~110.000 avisos/día desde las
+      páginas de búsqueda, sin abrir cada aviso (precio de todo el stock todos los días).
 - [ ] **Gallito, precios diarios completos**: la carga por aviso cubre ~3.000/día (carga inicial ≈ 3 semanas).
       Las páginas de búsqueda de Gallito traen un JSON con `cards` (href, ubicación, dormitorios, m², precio y
       coordenadas de 24 avisos por página). Un `descubrir()` que lea esos listados permitiría ver el precio de

@@ -120,7 +120,7 @@ def armar_aviso(datos: dict, fuente: dict, ctx: Contexto) -> dict:
         "m2_edificados": datos.get("m2_edificados"), "dormitorios": datos.get("dormitorios"),
         "banos": datos.get("banos"), "garaje": datos.get("garaje"),
         "lat": datos.get("lat"), "lon": datos.get("lon"),
-        "imagenes": [i for i in (datos.get("imagenes") or []) if isinstance(i, str)][:5],
+        "imagenes": [i for i in (datos.get("imagenes") or []) if isinstance(i, str)][:3],
     }
 
 
@@ -158,17 +158,30 @@ async def correr_fuente(fuente: dict, ctx: Contexto, minutos: float, max_urls: i
     corrida = {"fecha": hoy, "fuente_id": fuente["id"], "inicio": ahora(), "urls_descubiertas": 0,
                "urls_revisadas": 0, "avisos_ok": 0, "nuevos": 0, "bajas": 0, "cambios_precio": 0,
                "errores": 0, "estado": "ok", "notas": ""}
-    if fuente.get("modo") == "adapter" and not (ad and hasattr(ad, "descubrir")):
+    if fuente.get("modo") == "adapter" and not (ad and (hasattr(ad, "descubrir") or hasattr(ad, "listar"))):
         corrida.update(estado="fallida", fin=ahora(),
                        notas=f"modo 'adapter' pero no existe radar/adapters/{fuente['id'].replace('-', '_')}.py "
-                             "con descubrir(): no se corre (ver docs/NUEVA_FUENTE.md).")
+                             "con descubrir() o listar(): no se corre (ver docs/NUEVA_FUENTE.md).")
         store.insert("corridas", [corrida])
         return corrida
     cli = Cliente(delay_seg=float(fuente.get("delay_seg") or 1.5))
+    # Un adapter puede pedir más tiempo (InfoCasas: MINUTOS=170). Corridas de prueba cortas (<30 min) mandan.
+    if ad and hasattr(ad, "MINUTOS") and minutos >= 30:
+        minutos = float(ad.MINUTOS)
+    # Modo "listado completo": el adapter lee páginas de búsqueda que ya traen todos los datos de cada aviso
+    # (precio, ubicación, m²...). No se abre cada aviso: se ve el precio de TODO el stock en cada corrida.
+    registros: dict[str, dict] | None = None
+    listado_completo = False
     try:
         # 1) descubrir
         try:
-            if ad and hasattr(ad, "descubrir"):
+            if ad and hasattr(ad, "listar"):
+                registros, listado_completo = await ad.listar(cli, fuente, t0 + minutos * 60,
+                                                              max_paginas=2 if solo_descubrir else None)
+                descubiertas = {u: None for u in registros}
+                if not listado_completo:
+                    corrida["notas"] += "el listado no se recorrió completo (tiempo o error): hoy no se marcan bajas. "
+            elif ad and hasattr(ad, "descubrir"):
                 descubiertas = await ad.descubrir(cli, fuente)
             elif fuente.get("modo") == "listado":
                 descubiertas = await discover.por_listado(cli, fuente.get("listado_urls"), patron)
@@ -185,6 +198,8 @@ async def correr_fuente(fuente: dict, ctx: Contexto, minutos: float, max_urls: i
         corrida["urls_descubiertas"] = len(descubiertas)
         if solo_descubrir:
             corrida["muestra"] = sorted(descubiertas)[:20]
+            if registros:
+                corrida["muestra_datos"] = list(registros.values())[:20]
             return corrida
 
         # 2) qué revisar hoy: nuevas primero, después las activas que hace más que no se revisan
@@ -195,7 +210,14 @@ async def correr_fuente(fuente: dict, ctx: Contexto, minutos: float, max_urls: i
         # Si el sitemap lista todo el stock, los activos que faltan en él son candidatos a baja: se revisan primero.
         faltantes: set[str] = set()
         sitemap_sano = len(descubiertas) >= 0.7 * len(activas)
-        if fuente.get("sitemap_completo") and sitemap_sano:
+        if registros is not None:
+            # listado completo y sano: lo que no apareció es candidato a baja (2 días seguidos)
+            if listado_completo and sitemap_sano:
+                faltantes = {a["url"] for a in activas if a["url"] not in descubiertas}
+            elif activas and listado_completo:
+                corrida["notas"] += (f"el listado trajo {len(descubiertas)} avisos vs {len(activas)} activos: "
+                                     "no se usa como señal de baja hoy. ")
+        elif fuente.get("sitemap_completo") and sitemap_sano:
             faltantes = {a["url"] for a in activas if a["url"] not in descubiertas}
         elif fuente.get("sitemap_completo") and activas:
             corrida["notas"] += (f"sitemap con {len(descubiertas)} URLs vs {len(activas)} activos: "
@@ -227,6 +249,9 @@ async def correr_fuente(fuente: dict, ctx: Contexto, minutos: float, max_urls: i
         # 3) pedir y extraer (secuencial por dominio; el Cliente ya mete la pausa)
         resultados: list[tuple[str, Respuesta, dict | None]] = []
         limite = t0 + minutos * 60
+        if registros is not None:  # ya tenemos los datos: no se abre cada aviso
+            resultados = [(u, Respuesta(u, u, 200, ""), d) for u, d in registros.items()]
+            cola = []
         for url in cola:
             if time.monotonic() > limite:
                 corrida["notas"] += f"se cortó por tiempo tras {len(resultados)} URLs. "
@@ -271,7 +296,9 @@ async def correr_fuente(fuente: dict, ctx: Contexto, minutos: float, max_urls: i
         prev = conocidos.get(url)
         if clase == "ok":
             a = armar_aviso(datos, fuente, ctx)
-            foto.append({**a, "status": resp.status, "precio_dudoso": bool(datos.get("_precio_dudoso"))})
+            # foto diaria liviana (sin fotos ni textos largos): ~5 MB/día comprimida con todas las fuentes
+            foto.append({k: v for k, v in a.items() if k not in ("imagenes", "barrio_raw", "direccion")}
+                        | {"status": resp.status, "precio_dudoso": bool(datos.get("_precio_dudoso"))})
             if prev and prev["id"] != a["id"]:
                 a["id"] = prev["id"]
             a.update(estado="activo", ultima_vez=hoy, revisado_en=hoy, fallos_consecutivos=0,
