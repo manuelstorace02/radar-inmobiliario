@@ -27,7 +27,10 @@ reporte diario).
 
 ## Fase 2 — Webs propias de las inmobiliarias (semanas 2–6)
 - [ ] Sumar las webs propias, empezando por las 30 inmobiliarias con más avisos en portales.
-- [ ] Detectar plataformas comunes (mismo proveedor web ⇒ mismo adapter) para sumar decenas de sitios de una vez.
+- [x] Detectar plataformas comunes (`docs/INMOBILIARIAS.md`): TeraCRM 42, nai 14, Tokko 12, Houzez 7, Cliksi 5.
+- [x] **TeraCRM** (`radar/adapters/tera.py`, 23/11): 34 inmobiliarias activas (sobre todo Punta del Este).
+      8 usan una plantilla Tera más nueva (`/propiedades`, `ficha.php`): quedan pausadas, falta una variante.
+- [ ] Siguientes adapters de plataforma: Tokko Broker, nai, WordPress/Houzez (API REST), Cliksi.
 - [ ] Reporte "web propia vs. portal": misma propiedad con precio distinto en la web de la inmobiliaria y en
       los portales (ya lo calcula `v_propiedades_multifuente`; falta tener las webs cargadas).
 - [ ] **Mercado Libre**: usar la API oficial (crear app en developers.mercadolibre.com.uy, guardar credenciales

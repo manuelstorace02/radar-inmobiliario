@@ -1,2 +1,44 @@
 # Inmobiliarias conocidas. alias = cómo aparece su nombre en los portales, separado por ';'
 id,nombre,web,alias,notas
+nicolasdemodena,Inmobiliaria Nicolás De Módena,https://nicolasdemodena.com,Inmobiliaria Nicolás De Módena;Nicolás De Módena,web TeraCRM; Maldonado / Punta del Este
+sipunta,SíPUNTA Servicios Inmobiliarios,https://sipunta.com,SíPUNTA Servicios Inmobiliarios;SíPUNTA,web TeraCRM; Maldonado / Punta del Este
+inmobiliariacolmena,Colmena Negocios Inmobiliarios,https://www.inmobiliariacolmena.com.uy,Colmena Negocios Inmobiliarios;Colmena,web TeraCRM; Maldonado / Punta del Este
+nanalavagna,Nana Lavagna,https://nanalavagna.com,Nana Lavagna,web TeraCRM; Maldonado / Punta del Este
+parolinpropiedades,Parolin & Asociados Propiedades,https://www.parolinpropiedades.com,PAROLIN & ASOCIADOS PROPIEDADES;PAROLIN,web TeraCRM; Maldonado / Punta del Este
+marketdeleste,marketdeleste,https://www.marketdeleste.com,marketdeleste,web TeraCRM; Maldonado / Punta del Este
+bhpropiedades,Inmobiliaria B&H propiedades,https://bhpropiedades.com.uy,Inmobiliaria B&H propiedades,web TeraCRM; Maldonado / Punta del Este
+galepropiedades,Gale Propiedades & Escribania,https://www.galepropiedades.com.uy,GALE PROPIEDADES & ESCRIBANIA;GALE PROPIEDADES,web TeraCRM; Maldonado / Punta del Este
+rominasilveira,Romina Silveira Propiedades,https://www.rominasilveira.com,Romina Silveira Propiedades;Romina Silveira,web TeraCRM; Maldonado / Punta del Este
+pbiinmobiliaria,Punta Ballena Inmobiliaria,https://pbiinmobiliaria.com,Punta Ballena Inmobiliaria;Punta Ballena,web TeraCRM; Maldonado / Punta del Este
+antoninisanchez,Antonini Sánchez bienes raíces,https://antoninisanchez.com.uy,Antonini Sánchez bienes raíces;Antonini Sánchez,web TeraCRM; Maldonado / Punta del Este
+arellano,Arellano Negocios Inmobiliarios,https://arellano.com.uy,Arellano Negocios Inmobiliarios;Arellano,web TeraCRM; Maldonado / Punta del Este
+pietrafesapropiedades,Pietrafesa Propiedades,https://www.pietrafesapropiedades.com.uy,Pietrafesa Propiedades;Pietrafesa,web TeraCRM; Montevideo
+pucurull,Pucurull,https://www.pucurull.com,Pucurull,web TeraCRM; Maldonado / Punta del Este
+puntamar,Puntamar,https://puntamar.com,Puntamar,web TeraCRM; Maldonado / Punta del Este
+agropuntapropiedades,AgroPunta,https://www.agropuntapropiedades.com,AgroPunta,web TeraCRM; Maldonado / Punta del Este
+lumara,Lumara,https://lumara.com.uy,Lumara,web TeraCRM; Maldonado / Punta del Este
+equipoinmobiliario,Equipo Inmobiliario,https://www.equipoinmobiliario.com.uy,Equipo Inmobiliario,web TeraCRM; Maldonado / Punta del Este
+machadoinmobiliaria,Machado Inmobiliaria,https://www.machadoinmobiliaria.com.uy,Machado Inmobiliaria;Machado,web TeraCRM; Maldonado / Punta del Este
+inespodesta,Inés Podestá Propiedades,https://inespodesta.com.uy,Inés Podestá Propiedades;Inés Podestá,web TeraCRM; Maldonado / Punta del Este
+baridonpropiedades,Baridón Propiedades,https://baridonpropiedades.com,Baridón Propiedades;Baridón,web TeraCRM; Montevideo + Canelones / Costa de Oro
+inmobiliariaonex,Onex,https://inmobiliariaonex.com.uy,ONEX,web TeraCRM; Maldonado / Punta del Este + Tacuarembó
+growinversionesinmobiliarias,Grow Inversiones Inmobiliarias,https://growinversionesinmobiliarias.com.uy,Grow Inversiones Inmobiliarias,web TeraCRM; Maldonado / Punta del Este
+librainmobiliaria,Libra Inmobiliaria,https://librainmobiliaria.com,LIBRA INMOBILIARIA;LIBRA,web TeraCRM; Montevideo
+karencolombopropiedades,Karen Colombo Propiedades,https://karencolombopropiedades.com,Karen Colombo Propiedades;Karen Colombo,web TeraCRM; Maldonado / Punta del Este + Canelones / Costa de Oro
+atlanticsouth,Atlantic South Real Estate,https://www.atlanticsouth.com.uy,Atlantic South Real Estate;Atlantic South,web TeraCRM; Maldonado / Punta del Este
+viggapropiedades,Vigga Propiedades,https://viggapropiedades.com,Vigga Propiedades;Vigga,web TeraCRM; Montevideo
+brumar,Brumar Propiedades,https://www.brumar.uy,Brumar Propiedades;Brumar,web TeraCRM; Maldonado / Punta del Este
+villalbapropiedades,Villalba Propiedades,https://www.villalbapropiedades.com,Villalba Propiedades;Villalba,web TeraCRM; Maldonado / Punta del Este
+luxurypunta,Luxury Punta,https://luxurypunta.com,Luxury Punta,web TeraCRM; Maldonado / Punta del Este
+inmobiliariagorlero,Inmobiliaria Gorlero,https://www.inmobiliariagorlero.com,Inmobiliaria Gorlero;Gorlero,web TeraCRM; Maldonado / Punta del Este
+estudioadm,Estudio ADM,https://estudioadm.com,Estudio ADM,web TeraCRM; Maldonado / Punta del Este
+cabodevilla,Cabodevilla Real Estate,https://cabodevilla.com.uy,Cabodevilla Real Estate;Cabodevilla,web TeraCRM; Montevideo + Maldonado / Punta del Este
+kbnegociosinmobiliarios,KB Inmobiliarios,https://kbnegociosinmobiliarios.com,KB Inmobiliarios,web TeraCRM; Montevideo
+sabaspereira,Sabás Pereira,https://sabaspereira.uy,Sabás Pereira,web TeraCRM; Maldonado / Punta del Este
+marcegrosso,Marce Grosso Real Estate,https://marcegrosso.com,MARCE GROSSO REAL ESTATE;MARCE GROSSO,web TeraCRM; Maldonado / Punta del Este
+gary,Gary +,https://www.gary.uy,Gary +,web TeraCRM; Maldonado / Punta del Este
+inmobiliarianestor,Inmobiliaria Nestor,https://www.inmobiliarianestor.com.uy,Inmobiliaria Nestor;Nestor,web TeraCRM; Maldonado / Punta del Este
+tesouro,Tesouro,https://www.tesouro.com.uy,Tesouro,web TeraCRM; Montevideo
+lopezbesozzi,LOPEZ BESOZZI Negocios Inmobiliarios,https://www.lopezbesozzi.com.uy,LOPEZ BESOZZI Negocios Inmobiliarios;LOPEZ BESOZZI,web TeraCRM; Maldonado / Punta del Este
+lupa,Lupa Real Estate,https://www.lupa.com.uy,Lupa Real Estate,web TeraCRM; Montevideo + Canelones / Costa de Oro
+birnbachrealestate,Birnbach Real Estate,https://birnbachrealestate.com,Birnbach Real Estate;Birnbach,web TeraCRM; Maldonado / Punta del Este

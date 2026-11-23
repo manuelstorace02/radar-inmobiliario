@@ -23,11 +23,22 @@ import importlib
 from types import ModuleType
 
 
-def cargar(fuente_id: str) -> ModuleType | None:
-    nombre = fuente_id.replace("-", "_").replace(".", "_")
+def _importar(nombre: str) -> ModuleType | None:
     try:
         return importlib.import_module(f"radar.adapters.{nombre}")
     except ModuleNotFoundError as e:
         if e.name == f"radar.adapters.{nombre}":
             return None
         raise
+
+
+def cargar(fuente_id: str) -> ModuleType | None:
+    """Adapter propio de la fuente (radar/adapters/<id>.py) o, si no hay, el de su PLATAFORMA: el prefijo del id
+    antes del primer '-' (ej. 'tera-nicolasdemodena' usa radar/adapters/tera.py)."""
+    ad = _importar(fuente_id.replace("-", "_").replace(".", "_"))
+    if ad is None and "-" in fuente_id:
+        pref = fuente_id.split("-", 1)[0]
+        ad = _importar(pref) if pref not in ("_ejemplo",) else None
+        if ad is not None and not getattr(ad, "PLATAFORMA", False):
+            return None
+    return ad

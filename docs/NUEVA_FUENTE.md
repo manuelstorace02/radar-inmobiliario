@@ -59,6 +59,11 @@ Copiá `radar/adapters/_ejemplo.py` a `radar/adapters/<id con _ en vez de ->.py`
 - `async descubrir(cli, fuente)` si el descubrimiento es especial (API, listados con JSON, etc.). Puede devolver
   un `set` de URLs o un `dict {url: lastmod}`.
 
+**Adapters de plataforma.** Muchas inmobiliarias usan la misma plataforma web (ver `docs/INMOBILIARIAS.md`). Si
+la fuente se llama `<plataforma>-<algo>` y no tiene adapter propio, se usa `radar/adapters/<plataforma>.py` (si
+ese archivo declara `PLATAFORMA = True`). Ej.: `tera-nicolasdemodena` usa `tera.py`. Para sumar otra
+inmobiliaria con esa plataforma alcanza con una fila en `fuentes.csv` (y su fila en `inmobiliarias.csv`).
+
 Probá con `probar-url <url> --fuente <id>` hasta que salga bien.
 
 ## 5. Dejarla andando
