@@ -8,6 +8,10 @@ on:
     - cron: "0 5 * * *"
   workflow_dispatch:
     inputs:
+      solo_panel:
+        description: "Solo rearmar y publicar el panel (sin scrapear)"
+        type: boolean
+        default: false
       max_urls:
         description: "Tope de avisos por fuente (vacío = el de cada fuente)"
         required: false
@@ -48,12 +52,15 @@ jobs:
           fi
 
       - name: Sincronizar configuración
+        if: ${{ !inputs.solo_panel }}
         run: python -m radar seed
 
       - name: Tipo de cambio
+        if: ${{ !inputs.solo_panel }}
         run: python -m radar tipo-cambio
 
       - name: Rutina diaria
+        if: ${{ !inputs.solo_panel }}
         run: |
           if [ -n "${{ inputs.max_urls }}" ]; then
             python -m radar diaria --max-urls "${{ inputs.max_urls }}" | tee salida.txt
