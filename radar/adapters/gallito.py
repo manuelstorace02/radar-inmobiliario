@@ -10,7 +10,7 @@ corte entra en 50 páginas. Lo que no entra en ningún corte (pocos casos: monoa
 lo cubre el sitemap.
 
 Cómo lo usa el scraper (HIBRIDO = True, ver radar/scrape.py):
-  1. listar(): precio y datos de casi todo el stock, todos los días (~1.800 páginas, ~45 min).
+  1. listar(): precio y datos de casi todo el stock, todos los días (~2.050 páginas, ~60 min; ~97% del stock).
   2. el sitemap completo sigue siendo la referencia para saber qué existe (señal de baja) y la fecha de cambio.
   3. con el tiempo que queda se abren avisos uno por uno: primero los que no están en el listado y los que
      todavía no tienen inmobiliaria (el dato que el listado no trae).
@@ -32,7 +32,7 @@ from radar import normalize as N
 BASE = "https://www.gallito.com.uy"
 HIBRIDO = True
 ANUNCIANTE_FALSO = "gallito"  # avisos viejos guardados con el nombre del sitio como anunciante: se re-abren
-MINUTOS = 165           # listado (~45 min) + avisos sueltos con el tiempo que sobre. Tope del workflow: 5,5 h.
+MINUTOS = 165           # listado (~60 min) + avisos sueltos con el tiempo que sobre. Tope del workflow: 5,5 h.
 POR_PAGINA = 39
 MAX_PAGINAS = 50        # después de la 50 el sitio redirige a la 1
 OPERACIONES = ["venta", "alquiler", "alquiler-temporario"]
