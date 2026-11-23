@@ -15,11 +15,11 @@ reporte diario).
 ## Fase 1 — Cobertura de portales (semanas 1–2)
 - [x] **InfoCasas** en modo "listado completo" (`radar/adapters/infocasas.py`): ~110.000 avisos/día desde las
       páginas de búsqueda, sin abrir cada aviso (precio de todo el stock todos los días).
-- [ ] **Gallito, precios diarios completos**: la carga por aviso cubre ~3.000/día (carga inicial ≈ 3 semanas).
-      Las páginas de búsqueda de Gallito traen un JSON con `cards` (href, ubicación, dormitorios, m², precio y
-      coordenadas de 24 avisos por página). Un `descubrir()` que lea esos listados permitiría ver el precio de
-      TODO el stock cada día con ~2.500 requests. Requiere que el scraper acepte datos parciales desde el
-      listado (sin pedir el detalle) — ver `scrape.py`, paso 3.
+- [x] **Gallito en modo híbrido** (`radar/adapters/gallito.py`, 23/11): listado de búsquedas partido en cortes
+      (operación → tipo → departamento → barrio → dormitorios, porque cada búsqueda corta en 50 páginas) con el
+      precio de ~50.000 avisos por día; sitemap para las bajas; avisos sueltos para completar la inmobiliaria.
+- [x] **Panel a medida desde el chat**: tabla `panel_secciones` + conector de escritura
+      (`supabase/functions/radar-escritura`) con secciones, reportes, preferencias y pedidos.
 - [ ] **Directorio de inmobiliarias**: armar `data/seed/inmobiliarias.csv` a partir de
       `gallito.com.uy/sitemaps/agencies.xml` y del sitemap `inmobilirias-constructoras` de InfoCasas
       (nombre, web propia, alias). Con eso los avisos de portales quedan atribuidos a cada inmobiliaria.
@@ -36,7 +36,9 @@ reporte diario).
 ## Fase 3 — Producto para el usuario (mes 2)
 - [x] Vistas `dash_*` y usuario de solo lectura para el dashboard (`sql/dashboard.sql`).
 - [ ] Armar el tablero en **Looker Studio** siguiendo `docs/DASHBOARD.md`.
-- [ ] Alertas personalizadas: barrios/tipologías que le interesan al usuario arriba de todo en el mensaje.
+- [x] Alertas personalizadas: reportes guardados + preferencias `pref_*` (desde el chat, conector de escritura).
+- [ ] Vigilar el tamaño: con ~160.000 avisos el plan gratis de Supabase (500 MB de base, 1 GB de Storage) puede
+      quedar justo en unos meses. Opciones: comprimir/rotar las fotos diarias de Storage o pasar al plan Pro.
 - [ ] Resumen semanal (lunes) además del diario.
 - [ ] Historial de precios por propiedad (Gallito expone `priceHistory` en sus datos; aprovecharlo).
 

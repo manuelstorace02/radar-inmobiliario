@@ -172,10 +172,23 @@ async def correr_fuente(fuente: dict, ctx: Contexto, minutos: float, max_urls: i
     # (precio, ubicación, m²...). No se abre cada aviso: se ve el precio de TODO el stock en cada corrida.
     registros: dict[str, dict] | None = None
     listado_completo = False
+    # Modo HÍBRIDO (Gallito): el listado da precio y datos de casi todo el stock, pero el sitemap sigue siendo la
+    # referencia de qué existe (bajas) y se abren avisos sueltos para lo que el listado no trae (la inmobiliaria).
+    hibrido = bool(ad and getattr(ad, "HIBRIDO", False) and hasattr(ad, "listar"))
+    listados: dict[str, dict] = {}
     try:
         # 1) descubrir
         try:
-            if ad and hasattr(ad, "listar"):
+            if hibrido:
+                listados, completo = await ad.listar(cli, fuente, t0 + minutos * 60 * 0.6,
+                                                     max_paginas=2 if solo_descubrir else None)
+                corrida["notas"] += (f"listado: {len(listados)} avisos"
+                                     f"{'' if completo else ' (no cubre todo el stock: el resto va por sitemap)'}. ")
+                descubiertas = await discover.por_sitemap(cli, fuente["url_base"], patron)
+                for u in listados:
+                    descubiertas.setdefault(u, None)
+                registros = listados if solo_descubrir else None
+            elif ad and hasattr(ad, "listar"):
                 registros, listado_completo = await ad.listar(cli, fuente, t0 + minutos * 60,
                                                               max_paginas=2 if solo_descubrir else None)
                 descubiertas = {u: None for u in registros}
@@ -233,7 +246,16 @@ async def correr_fuente(fuente: dict, ctx: Contexto, minutos: float, max_urls: i
         resto = tope - len(prioridad)
         cupo_nuevas = int(resto * 0.7) if len(activas) else resto
         viejas = [a["url"] for a in activas]
-        cola = list(dict.fromkeys(prioridad + nuevas[:cupo_nuevas] + viejas + nuevas[cupo_nuevas:]))[:tope]
+        if hibrido:
+            # lo que el listado no trajo hay que abrirlo; de lo listado, solo lo que todavía no tiene inmobiliaria
+            fuera = [u for u in nuevas if u not in listados] + [u for u in viejas if u not in listados]
+            sin_inm = [u for u in listados if not (conocidos.get(u) or {}).get("anunciante")
+                       or str(conocidos[u]["anunciante"]).lower().startswith(getattr(ad, "ANUNCIANTE_FALSO", "\0"))]
+            sin_inm.sort(key=lambda u: (u in conocidos, u))  # primero las nuevas
+            tope = tope if max_urls else max(tope, 8000)  # manda el tiempo
+            cola = list(dict.fromkeys(prioridad + fuera[:int(tope * 0.4)] + sin_inm + fuera))[:tope]
+        else:
+            cola = list(dict.fromkeys(prioridad + nuevas[:cupo_nuevas] + viejas + nuevas[cupo_nuevas:]))[:tope]
         # Carga inicial: mientras conozcamos menos del 90% de lo que publica la fuente, lo "nuevo" no es noticia
         # (es stock viejo que todavía no habíamos cargado): no se generan eventos de alta.
         conocidos_url = set(conocidos)
@@ -266,6 +288,19 @@ async def correr_fuente(fuente: dict, ctx: Contexto, minutos: float, max_urls: i
                 except Exception as e:  # noqa: BLE001
                     corrida["notas"] += f"extractor falló en {url}: {e}. "
             resultados.append((url, resp, datos))
+        if hibrido:
+            # lo listado manda (está publicado hoy); si además se abrió el aviso, se completa con lo del listado
+            abiertos = {}
+            for i, (u, r, d) in enumerate(resultados):
+                if u in listados:
+                    if clasificar(r, d, es_aviso) == "ok":
+                        resultados[i] = (u, r, {**listados[u], **{k: v for k, v in d.items() if v not in (None, "", [])},
+                                                "_origen": "aviso"})
+                    else:
+                        resultados[i] = (u, Respuesta(u, u, 200, ""), {**listados[u], "_origen": "listado"})
+                    abiertos[u] = True
+            resultados += [(u, Respuesta(u, u, 200, ""), {**d, "_origen": "listado"})
+                           for u, d in listados.items() if u not in abiertos]
     finally:
         await cli.cerrar()
 
@@ -320,7 +355,11 @@ async def correr_fuente(fuente: dict, ctx: Contexto, minutos: float, max_urls: i
                                     "valor_nuevo": f"{a['moneda']} {a['precio']}",
                                     "precio_usd_anterior": prev.get("precio_usd"), "precio_usd_nuevo": a["precio_usd"]})
                     corrida["cambios_precio"] += 1
-                for c in CAMPOS_DATO:
+                # híbrido: el listado y la página del aviso pueden mostrar distinto (m², barrio): solo se comparan
+                # los campos estables y solo entre listados, para no inventar cambios por cambiar de origen
+                campos = CAMPOS_DATO if not hibrido else \
+                    (["dormitorios", "operacion", "tipo"] if datos.get("_origen") == "listado" else [])
+                for c in campos:
                     if prev.get(c) not in (None, "") and a.get(c) not in (None, "") and str(prev[c]) != str(a[c]):
                         eventos.append({**base_ev, "tipo": "dato", "campo": c,
                                         "valor_anterior": str(prev[c]), "valor_nuevo": str(a[c])})

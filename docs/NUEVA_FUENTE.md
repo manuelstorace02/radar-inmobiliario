@@ -53,6 +53,9 @@ Copiá `radar/adapters/_ejemplo.py` a `radar/adapters/<id con _ en vez de ->.py`
 - `extraer(html, url, generico)` para corregir campos (precio, ubicación, anunciante, id_externo...).
 - `async listar(cli, fuente, limite_ts, max_paginas=None)` → `({url: datos}, completo)` cuando las páginas de
   listado ya traen todos los datos (ej. InfoCasas): no se abre cada aviso y se ve todo el stock cada día.
+  Si el listado trae casi todo pero le falta algo (ej. la inmobiliaria) o no llega a todo el stock, agregá
+  `HIBRIDO = True` (ej. Gallito): el listado da precios y datos, el sitemap sigue mandando para las bajas, y
+  con el tiempo que sobra se abren los avisos que el listado no trajo o que no tienen inmobiliaria.
 - `async descubrir(cli, fuente)` si el descubrimiento es especial (API, listados con JSON, etc.). Puede devolver
   un `set` de URLs o un `dict {url: lastmod}`.
 

@@ -42,6 +42,8 @@ TABLAS: dict[str, list[str]] = {
     "reportes_diarios": ["fecha", "reporte_md", "personalizados_md", "salud_md", "reporte_html", "generado_en"],
     "reportes_guardados": ["id", "nombre", "descripcion", "sql", "frecuencia", "solo_si_hay_resultados", "activo",
                            "pedido_por", "ultima_ejecucion", "ultimas_filas", "ultimo_error"],
+    "panel_secciones": ["id", "titulo", "descripcion", "sql", "grafico", "orden", "activo", "pedido_por",
+                        "actualizado_en", "ultimas_filas", "ultimo_error"],
 }
 CLAVES: dict[str, list[str]] = {
     "inmobiliarias": ["id"], "fuentes": ["id"], "barrios_alias": ["alias", "departamento"],
@@ -49,6 +51,7 @@ CLAVES: dict[str, list[str]] = {
     "estadisticas_diarias": ["fecha", "departamento", "barrio", "operacion", "tipo"],
     "reportes_guardados": ["id"],
     "reportes_diarios": ["fecha"],
+    "panel_secciones": ["id"],
 }
 JSON_COLS = {"avisos": {"imagenes"}, "inmobiliarias": {"alias"}}
 

@@ -79,10 +79,13 @@ sin la contraseña no se puede leer nada aunque el sitio sea público.
 
 ## 7. La tarea programada de ChatGPT (el mensaje del día)
 
-Necesita el conector **Supabase Radar** (solo lectura). **Repetir:** cada día, **7:30**. **Qué debe hacer:**
+Necesita el conector **Supabase Radar** (solo lectura) y, para poder pedir cambios desde ese mismo chat, el
+conector **Radar escritura** (paso 9). **Repetir:** cada día, **7:30**. **Qué debe hacer:**
 
 ```
-Usá el conector Supabase Radar (solo lectura). Buscá en la tabla reportes_diarios la fila de hoy
+Usá el conector Supabase Radar (solo lectura). Leé primero la tabla parametros (filas con clave que empieza
+con pref_): son preferencias del usuario sobre el mensaje (barrios foco, largo, qué no mostrar); respetalas.
+Buscá en la tabla reportes_diarios la fila de hoy
 (fecha = fecha de hoy en Uruguay). Si no existe, usá la más reciente y avisá arriba de todo que la corrida
 de hoy no llegó (hay que mirar la pestaña Actions del repo manuelstorace02/radar-inmobiliario).
 
@@ -96,6 +99,10 @@ Reporte completo y panel: https://manuelstorace02.github.io/radar-inmobiliario/r
 Reglas: usá solo números que estén en esa fila o que consultes en la base; nunca digas "vendido" ni
 "alquilado", decí "desapareció"; si no hubo movimientos relevantes, decilo en una línea. Si una misma
 propiedad aparece con precios muy distintos, aclaralo como "a revisar": puede ser un error del agrupado.
+
+Si el usuario te responde en este chat pidiendo cambios (una sección nueva en el panel, un reporte diario,
+una alerta, preferencias), usá el conector Radar escritura siguiendo la sección 2.2 de AGENTS.md del repo
+manuelstorace02/radar-inmobiliario: probá la consulta, mostrale qué va a ver y guardá solo con su OK.
 ```
 
 ## 8. Ver los resultados
@@ -104,3 +111,24 @@ propiedad aparece con precios muy distintos, aclaralo como "a revisar": puede se
 - **Los datos crudos**: Supabase → **Table Editor** (`avisos`, `eventos`, `estadisticas_diarias`...). Se puede
   filtrar y exportar a CSV como una planilla.
 - **Sumar una inmobiliaria**: pedíselo a Codex en el chat ("agregá la inmobiliaria X, web Y").
+
+## 9. Conector de escritura (pedir cambios del panel desde el chat)
+
+Con esto el usuario le dice a ChatGPT "agregame al panel la evolución del m² en Malvín Norte vs Malvín" y
+queda hecho, sin Codex. Es una función chiquita en Supabase que solo puede guardar secciones del panel,
+reportes, preferencias y pedidos (no puede borrar ni cambiar datos del scraping).
+
+1. **Tablas**: Supabase → **SQL Editor** → pegar `sql/panel.sql` → **Run**.
+2. **La función**: Supabase → **Edge Functions** → **Deploy a new function** → **Via Editor**. Nombre:
+   `radar-escritura`. Borrar el código de ejemplo, pegar todo `supabase/functions/radar-escritura/index.ts`
+   → **Deploy function**.
+3. En la función → **Details** → apagar **Verify JWT with legacy secret** (la protege su propia clave) → **Save**.
+4. **Edge Functions → Secrets → Add new secret**: `RADAR_MCP_CLAVE` = una contraseña larga (solo letras y
+   números). Opcional, para "publicar ya": `GITHUB_TOKEN` = un token de GitHub *fine-grained* sobre el repo
+   `radar-inmobiliario` con permiso **Actions: Read and write** (github.com → Settings → Developer settings →
+   Fine-grained tokens).
+5. **ChatGPT** → Configuración → **Aplicaciones y conectores** → **Crear** (modo desarrollador). Nombre
+   `Radar escritura`; URL `https://pedzyaajcsqnjcpidhhl.supabase.co/functions/v1/radar-escritura?k=LA_CLAVE`;
+   autenticación: **Sin autenticación**. Activarlo en la tarea de la mañana y en los chats donde se use.
+6. Probar en un chat: *"Con Radar escritura, listá mis cosas"*.
+

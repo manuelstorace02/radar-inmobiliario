@@ -5,6 +5,6 @@
 # sitemap_completo: si el sitemap lista todo el stock activo (permite detectar bajas sin pedir cada aviso)
 # estado: nueva | ok | rota | bloqueada | pausada  (pausada = no se corre)
 id,nombre,tipo,inmobiliaria_id,url_base,modo,patron_aviso,listado_urls,sitemap_completo,max_urls,delay_seg,activa,estado,notas
-gallito,Gallito,portal,,https://www.gallito.com.uy,sitemap,-inmuebles-\d+$,,si,3000,1.0,si,nueva,Sitemap índice con ~16 sitemaps de avisos (~5k c/u). Robots permite crawlers genéricos; bloquea bots de IA.
+gallito,Gallito,portal,,https://www.gallito.com.uy,adapter,-inmuebles-\d+$,,si,8000,1.0,si,nueva,Híbrido: listado de búsquedas (precio de todo el stock) + sitemap (bajas) + avisos sueltos para la inmobiliaria. Ver radar/adapters/gallito.py.
 infocasas,InfoCasas,portal,,https://www.infocasas.com.uy,adapter,,,no,0,1.0,si,nueva,Modo listado completo (radar/adapters/infocasas.py): lee venta + alquiler + alquiler temporal desde las páginas de búsqueda (~5.000 páginas/día) sin abrir cada aviso.
 mercadolibre,Mercado Libre Inmuebles,portal,,https://inmuebles.mercadolibre.com.uy,adapter,,,no,2500,2,no,pausada,Usar la API oficial (developers.mercadolibre.com.uy) en vez de scrapear. robots.txt bloquea ChatGPT-User/GPTBot. Ver ROADMAP fase 2.

@@ -37,6 +37,11 @@ main{max-width:1080px;margin:0 auto;padding:28px 16px 60px}h1{font-size:28px;mar
 .lista a:hover{border-color:var(--acc)}.lista b{display:block}.lista span{color:var(--mut);font-size:12px}
 .btn{display:inline-block;background:var(--acc);color:#fff;border-radius:10px;padding:10px 16px;text-decoration:none;font-weight:600;margin-top:12px}
 footer{color:var(--mut);font-size:12px;margin-top:28px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--mut);font-weight:600}td.n{text-align:right;font-variant-numeric:tabular-nums}a{color:var(--acc)}
+.hb{display:grid;grid-template-columns:minmax(90px,32%) 1fr auto;gap:6px 10px;align-items:center;font-size:13px}
+.hb .bar{height:12px;border-radius:4px;background:var(--acc)}.hb .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--mut)}
+.err{color:var(--neg);font-size:13px}
 """
 
 
@@ -147,8 +152,81 @@ document.getElementById("f").onsubmit=async ev=>{{ev.preventDefault();
 </script></body></html>"""
 
 
+# --------------------------------------------------------------------------- secciones del usuario
+def _es_num(v) -> bool:
+    if isinstance(v, bool) or v is None:
+        return False
+    try:
+        float(v)
+        return True
+    except (TypeError, ValueError):
+        return False
+
+
+def _celda(v) -> str:
+    if v is None:
+        return "—"
+    if _es_num(v) and not isinstance(v, str):
+        f = float(v)
+        return _fmt(f) if abs(f) >= 100 or f.is_integer() else f"{f:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    return html.escape(str(v)[:80])
+
+
+def _titulo_col(c: str) -> str:
+    return html.escape(c.replace("_", " ").capitalize())
+
+
+def seccion_html(sec: dict, filas: list[dict] | None, error: str | None) -> str:
+    e = html.escape
+    cab = f'<section class="card"><h2>{e(sec["titulo"])}</h2>'
+    if sec.get("descripcion"):
+        cab += f'<p class="nota">{e(sec["descripcion"])}</p>'
+    if error:
+        return cab + f'<p class="err">No se pudo calcular hoy: {e(error[:200])}</p></section>'
+    if not filas:
+        return cab + '<p class="nota">Sin resultados por ahora.</p></section>'
+    cols = list(filas[0].keys())
+    g = sec.get("grafico") or "tabla"
+    if g == "numero":
+        cuerpo = '<div class="kpis">' + "".join(
+            f'<div class="kpi"><div class="kv">{_celda(filas[0][c])}</div><div class="kl">{_titulo_col(c)}</div></div>'
+            for c in cols if c != "url") + "</div>"
+    elif g == "barras":
+        num = next((c for c in cols if _es_num(filas[0][c]) and not isinstance(filas[0][c], str)), None) \
+            or next((c for c in cols if _es_num(filas[0][c])), cols[-1])
+        lab = next((c for c in cols if c != num and c != "url"), num)
+        datos = [(str(f.get(lab)), float(f[num]) if _es_num(f.get(num)) else 0.0) for f in filas[:25]]
+        vmax = max([abs(v) for _, v in datos] + [1])
+        cuerpo = '<div class="hb">' + "".join(
+            f'<div>{e(l[:40])}</div><div class="bar" style="width:{max(1, 100*abs(v)/vmax):.1f}%"></div><div class="v">{_celda(v)}</div>'
+            for l, v in datos) + "</div>"
+    elif g == "lineas" and len(cols) >= 2:
+        series: dict[str, list] = defaultdict(list)
+        x, val = cols[0], cols[-1]
+        serie = cols[1] if len(cols) >= 3 else None
+        for f in filas:
+            if _es_num(f.get(val)):
+                series[str(f.get(serie)) if serie else sec["titulo"]].append((str(f.get(x))[:10], float(f[val])))
+        cuerpo = grafico_lineas(dict(list(series.items())[:8]))
+    else:
+        vis = [c for c in cols if c != "url"]
+        filas_html = []
+        for f in filas[:60]:
+            celdas = []
+            for i, c in enumerate(vis):
+                t = _celda(f.get(c))
+                if i == 0 and f.get("url"):
+                    t = f'<a href="{e(str(f["url"]))}" target="_blank" rel="noopener">{t}</a>'
+                celdas.append(f'<td class="n">{t}</td>' if _es_num(f.get(c)) and not isinstance(f.get(c), str) else f"<td>{t}</td>")
+            filas_html.append("<tr>" + "".join(celdas) + "</tr>")
+        mas = f'<p class="nota">…y {len(filas) - 60} filas más.</p>' if len(filas) > 60 else ""
+        cuerpo = (f'<div class="tw"><table><tr>{"".join(f"<th>{_titulo_col(c)}</th>" for c in vis)}</tr>'
+                  f'{"".join(filas_html)}</table></div>{mas}')
+    return cab + cuerpo + "</section>"
+
+
 # --------------------------------------------------------------------------- panel
-def armar_panel(reportes: list[dict], stats: list[dict], corridas: list[dict]) -> str:
+def armar_panel(reportes: list[dict], stats: list[dict], corridas: list[dict], secciones_html: str = "") -> str:
     e = html.escape
     # evolución diaria del total (suma de avisos activos de estadisticas_diarias)
     activos = defaultdict(int)
@@ -191,6 +269,7 @@ def armar_panel(reportes: list[dict], stats: list[dict], corridas: list[dict]) -
 <h1>Radar Inmobiliario</h1><div class="sub">Panel · actualizado {e(ultimo or "—")}</div>
 {f'<a class="btn" href="reportes/{hoy}.html">Ver el reporte de hoy →</a>' if hoy else ''}
 <div class="kpis">{kpis}</div>
+{secciones_html}
 <section class="card"><h2>Avisos activos monitoreados</h2><p class="nota">Total por día, todas las fuentes.</p>
 {grafico_lineas({"Avisos activos": sorted(activos.items())})}</section>
 <section class="card"><h2>Movimiento diario</h2><p class="nota">Últimos 30 días. Durante la carga inicial de cada fuente no se cuentan publicados nuevos.</p>
@@ -203,6 +282,29 @@ def armar_panel(reportes: list[dict], stats: list[dict], corridas: list[dict]) -
 <section class="card"><h2>Reportes anteriores</h2><div class="lista">{lista or '<p class="nota">Todavía no hay reportes.</p>'}</div></section>
 <footer>"Desapareció" no significa vendido ni alquilado: el aviso dejó de estar publicado.</footer>
 </main></body></html>"""
+
+
+def secciones_usuario(store: Store) -> str:
+    """Corre las secciones que pidió el usuario (tabla panel_secciones) y devuelve su HTML, en orden."""
+    try:
+        secciones = [s for s in store.select("panel_secciones") if s.get("activo")]
+    except Exception:  # noqa: BLE001  (tabla todavía no creada: sql/panel.sql)
+        return ""
+    partes, act = [], []
+    for sec in sorted(secciones, key=lambda s: (int(s.get("orden") or 100), s["id"])):
+        filas, error = None, None
+        try:
+            filas = store.consulta(sec["sql"])
+        except Exception as ex:  # noqa: BLE001
+            error = str(ex)
+        partes.append(seccion_html(sec, filas, error))
+        act.append({**sec, "ultimas_filas": len(filas) if filas is not None else None, "ultimo_error": error})
+    if act:
+        try:
+            store.upsert("panel_secciones", act)
+        except Exception:  # noqa: BLE001
+            pass
+    return "\n".join(partes)
 
 
 def generar_sitio(store: Store, salida: Path, clave: str | None) -> dict:
@@ -219,8 +321,9 @@ def generar_sitio(store: Store, salida: Path, clave: str | None) -> dict:
         f = str(r["fecha"])[:10]
         pagina = r["reporte_html"].replace("<main>", volver + "<main>", 1)
         (salida / "reportes" / f"{f}.html").write_text(escribir(pagina, f"Radar · {f}"), encoding="utf-8")
-    (salida / "index.html").write_text(escribir(armar_panel(reportes, stats, corridas), "Radar Inmobiliario"),
-                                       encoding="utf-8")
+    secciones_html = secciones_usuario(store)
+    (salida / "index.html").write_text(escribir(armar_panel(reportes, stats, corridas, secciones_html),
+                                                "Radar Inmobiliario"), encoding="utf-8")
     (salida / ".nojekyll").write_text("")
     (salida / "robots.txt").write_text("User-agent: *\nDisallow: /\n")
     return {"reportes": len(reportes), "encriptado": bool(clave)}

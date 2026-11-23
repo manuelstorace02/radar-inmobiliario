@@ -17,7 +17,8 @@ Escribí siempre en **español rioplatense**, claro y directo. El usuario no es 
 | `data/seed/fuentes.csv` | Lista de sitios a scrapear. |
 | `data/seed/inmobiliarias.csv` | Inmobiliarias conocidas y cómo aparecen escritas en los portales. |
 | `data/seed/barrios.csv` | Mapa de barrios/zonas/localidades → nombre normalizado. |
-| `sql/schema.sql` | Esquema de la base (Supabase/Postgres). |
+| `sql/schema.sql` | Esquema de la base (Supabase/Postgres). `sql/panel.sql`: secciones del panel y pedidos. |
+| `supabase/functions/radar-escritura/` | Conector de escritura para el chat de ChatGPT (ver 2.2). |
 | `docs/NUEVA_FUENTE.md` | Procedimiento para sumar una inmobiliaria o portal. |
 | `docs/SETUP.md` | Instalación (para humanos). |
 | `ROADMAP.md` | Qué falta construir, en orden. |
@@ -88,6 +89,14 @@ https://manuelstorace02.github.io/radar-inmobiliario/
 
 ## 2. Pedidos que el usuario puede hacerte en el chat
 
+Hay dos lugares donde te pueden hablar:
+- **El chat de ChatGPT** (la tarea de la mañana o un chat normal), con dos conectores: **Supabase Radar**
+  (leer cualquier cosa de la base) y **Radar escritura** (guardar secciones del panel, reportes, preferencias y
+  pedidos; ver 2.2). Ahí NO se puede tocar código: lo que necesite código se anota con `anotar_pedido`.
+- **Codex** (con el repo): todo lo anterior más cambios de código. Al empezar, mirá la tabla `pedidos`
+  (estado `pendiente`): son cosas que el usuario pidió desde el chat. Al resolver uno, poné `estado='hecho'` y
+  una `respuesta` corta.
+
 - **"Agregá la inmobiliaria X (web Y)"** → seguí `docs/NUEVA_FUENTE.md`. Al final mostrale 3 avisos de ejemplo
   extraídos para que confirme que se ve bien.
 - **"¿Qué pasó en Pocitos este mes?"** → consultá la base (tablas `eventos`, `avisos`, `estadisticas_diarias`,
@@ -140,6 +149,28 @@ python -m radar reporte-guardar aptos-2d-pocitos-bajan --nombre "Aptos 2 dorm. e
          from dash_eventos where fecha = current_date and evento = 'Bajó precio' and barrio = 'Pocitos'
          and tipo = 'apartamento' and operacion = 'venta' and dormitorios = 2 order by variacion_pct"
 ```
+
+### 2.2 Panel a medida (desde el chat)
+
+El panel web (https://manuelstorace02.github.io/radar-inmobiliario/) muestra arriba de todo las **secciones del
+usuario** (tabla `panel_secciones`), y debajo las fijas (evolución, movimiento diario, USD/m², reportes viejos).
+Cuando el usuario pida "agregame al panel X", "sacá Y", "poné Z más arriba":
+
+1. Escribí el SELECT sobre las vistas `dash_*` (mismas reglas que 2.1) y elegí el gráfico:
+   - `numero`: una sola fila; cada columna es una tarjeta grande (ej. `count(*) as avisos, ... as mediana_usd`).
+   - `barras`: columnas (etiqueta, valor), ordenado y con `limit` 10–25 (ej. USD/m² por barrio).
+   - `lineas`: (fecha, valor) o (fecha, serie, valor) ordenado por fecha (ej. `dash_evolucion_barrio`).
+   - `tabla`: cualquier cosa; con columna `url`, la primera columna es link. Máximo ~60 filas visibles.
+   Nombrá las columnas en español claro (`as mediana_usd`): son los títulos que ve el usuario.
+2. `probar_consulta` y mostrale qué va a ver. Con su OK: `guardar_seccion_panel` (mismo `id` para cambiarla;
+   `orden` menor = más arriba). Para sacarla: `pausar`. Nunca se borra.
+3. `publicar_panel` para verlo ya (~2 minutos); si no está configurado, sale en la corrida de la madrugada.
+
+Preferencias del mensaje diario ("hablame solo de Malvín y Buceo", "más corto", "no me muestres alquileres"):
+`guardar_preferencia` (quedan en `parametros` con prefijo `pref_`; la tarea de la mañana las respeta).
+
+Si algo no se puede con una consulta (un sitio nuevo, otro diseño, un dato que no se extrae), `anotar_pedido`
+con el pedido en las palabras del usuario y decile que queda anotado para la próxima vuelta de código.
 
 ---
 

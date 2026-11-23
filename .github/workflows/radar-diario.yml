@@ -29,7 +29,7 @@ concurrency:
 jobs:
   radar:
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 330  # scraping ~3 h (InfoCasas y Gallito en paralelo) + procesamiento; el máximo de GitHub es 360
     env:
       SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
       RADAR_MINUTOS: "50"
