@@ -12,13 +12,13 @@ tera-nicolasdemodena,Inmobiliaria Nicolás De Módena,inmobiliaria,nicolasdemode
 tera-sipunta,SíPUNTA Servicios Inmobiliarios,inmobiliaria,sipunta,https://sipunta.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-inmobiliariacolmena,Colmena Negocios Inmobiliarios,inmobiliaria,inmobiliariacolmena,https://www.inmobiliariacolmena.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-nanalavagna,Nana Lavagna,inmobiliaria,nanalavagna,https://nanalavagna.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
-tera-parolinpropiedades,Parolin & Asociados Propiedades,inmobiliaria,parolinpropiedades,https://www.parolinpropiedades.com,adapter,,,si,3000,1.0,no,pausada,"Web TeraCRM con plantilla nueva (/propiedades, ficha.php): el adapter tera no la lee todavía."
-tera-marketdeleste,marketdeleste,inmobiliaria,marketdeleste,https://www.marketdeleste.com,adapter,,,si,3000,1.0,no,pausada,"Web TeraCRM con plantilla nueva (/propiedades, ficha.php): el adapter tera no la lee todavía."
+tera-parolinpropiedades,Parolin & Asociados Propiedades,inmobiliaria,parolinpropiedades,https://www.parolinpropiedades.com,adapter,,,si,3000,1.0,si,nueva,"Web TeraCRM plantilla nueva (/propiedades/en-venta/?pagina=N + alquiler por tipo): ~1.400 avisos, ~3 min."
+tera-marketdeleste,marketdeleste,inmobiliaria,marketdeleste,https://www.marketdeleste.com,adapter,,,si,3000,1.0,si,nueva,"Next.js sobre Tera (marketplace): /listings?transaction=sale|rent&page=N, datos del payload React. ~1.700 avisos, ~3 min."
 tera-bhpropiedades,Inmobiliaria B&H propiedades,inmobiliaria,bhpropiedades,https://bhpropiedades.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-galepropiedades,Gale Propiedades & Escribania,inmobiliaria,galepropiedades,https://www.galepropiedades.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-rominasilveira,Romina Silveira Propiedades,inmobiliaria,rominasilveira,https://www.rominasilveira.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
-tera-pbiinmobiliaria,Punta Ballena Inmobiliaria,inmobiliaria,pbiinmobiliaria,https://pbiinmobiliaria.com,adapter,,,si,3000,1.0,no,pausada,"Web TeraCRM con plantilla nueva (/propiedades, ficha.php): el adapter tera no la lee todavía."
-tera-antoninisanchez,Antonini Sánchez bienes raíces,inmobiliaria,antoninisanchez,https://antoninisanchez.com.uy,adapter,,,si,3000,1.0,no,pausada,"Web TeraCRM con plantilla nueva (/propiedades, ficha.php): el adapter tera no la lee todavía."
+tera-pbiinmobiliaria,Punta Ballena Inmobiliaria,inmobiliaria,pbiinmobiliaria,https://pbiinmobiliaria.com,adapter,,,si,3000,1.0,si,nueva,"Web TeraCRM con categorías casas-venta/?periodo=0&pagina=N: ~965 avisos, ~2 min."
+tera-antoninisanchez,Antonini Sánchez bienes raíces,inmobiliaria,antoninisanchez,https://antoninisanchez.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM plantilla nueva (/propiedades/en-venta/): ~590 avisos.
 tera-arellano,Arellano Negocios Inmobiliarios,inmobiliaria,arellano,https://arellano.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-pietrafesapropiedades,Pietrafesa Propiedades,inmobiliaria,pietrafesapropiedades,https://www.pietrafesapropiedades.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-pucurull,Pucurull,inmobiliaria,pucurull,https://www.pucurull.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
@@ -32,9 +32,9 @@ tera-baridonpropiedades,Baridón Propiedades,inmobiliaria,baridonpropiedades,htt
 tera-inmobiliariaonex,Onex,inmobiliaria,inmobiliariaonex,https://inmobiliariaonex.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-growinversionesinmobiliarias,Grow Inversiones Inmobiliarias,inmobiliaria,growinversionesinmobiliarias,https://growinversionesinmobiliarias.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-librainmobiliaria,Libra Inmobiliaria,inmobiliaria,librainmobiliaria,https://librainmobiliaria.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
-tera-karencolombopropiedades,Karen Colombo Propiedades,inmobiliaria,karencolombopropiedades,https://karencolombopropiedades.com,adapter,,,si,3000,1.0,no,pausada,"Web TeraCRM con plantilla nueva (/propiedades, ficha.php): el adapter tera no la lee todavía."
+tera-karencolombopropiedades,Karen Colombo Propiedades,inmobiliaria,karencolombopropiedades,https://karencolombopropiedades.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM clásica con ids de 8 dígitos: ~475 avisos.
 tera-atlanticsouth,Atlantic South Real Estate,inmobiliaria,atlanticsouth,https://www.atlanticsouth.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
-tera-viggapropiedades,Vigga Propiedades,inmobiliaria,viggapropiedades,https://viggapropiedades.com,adapter,,,si,3000,1.0,no,pausada,"Web TeraCRM con plantilla nueva (/propiedades, ficha.php): el adapter tera no la lee todavía."
+tera-viggapropiedades,Vigga Propiedades,inmobiliaria,viggapropiedades,https://viggapropiedades.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM plantilla nueva (/propiedades/en-venta/): ~350 avisos.
 tera-brumar,Brumar Propiedades,inmobiliaria,brumar,https://www.brumar.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-villalbapropiedades,Villalba Propiedades,inmobiliaria,villalbapropiedades,https://www.villalbapropiedades.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-luxurypunta,Luxury Punta,inmobiliaria,luxurypunta,https://luxurypunta.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
@@ -44,11 +44,11 @@ tera-cabodevilla,Cabodevilla Real Estate,inmobiliaria,cabodevilla,https://cabode
 tera-kbnegociosinmobiliarios,KB Inmobiliarios,inmobiliaria,kbnegociosinmobiliarios,https://kbnegociosinmobiliarios.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-sabaspereira,Sabás Pereira,inmobiliaria,sabaspereira,https://sabaspereira.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-marcegrosso,Marce Grosso Real Estate,inmobiliaria,marcegrosso,https://marcegrosso.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
-tera-gary,Gary +,inmobiliaria,gary,https://www.gary.uy,adapter,,,si,3000,1.0,no,pausada,"Web TeraCRM con plantilla nueva (/propiedades, ficha.php): el adapter tera no la lee todavía."
+tera-gary,Gary +,inmobiliaria,gary,https://www.gary.uy,adapter,,,si,3000,1.0,si,nueva,Web propia sobre Tera: array PROPS en catalogo.php y rentals.php (anual/invernal; temporada no). ~134 avisos.
 tera-inmobiliarianestor,Inmobiliaria Nestor,inmobiliaria,inmobiliarianestor,https://www.inmobiliarianestor.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-tesouro,Tesouro,inmobiliaria,tesouro,https://www.tesouro.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 tera-lopezbesozzi,LOPEZ BESOZZI Negocios Inmobiliarios,inmobiliaria,lopezbesozzi,https://www.lopezbesozzi.com.uy,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
-tera-lupa,Lupa Real Estate,inmobiliaria,lupa,https://www.lupa.com.uy,adapter,,,si,3000,1.0,no,pausada,"Web TeraCRM con plantilla nueva (/propiedades, ficha.php): el adapter tera no la lee todavía."
+tera-lupa,Lupa Real Estate,inmobiliaria,lupa,https://www.lupa.com.uy,adapter,,,si,3000,1.0,si,nueva,Web propia sobre Tera: properties.php?page=N y detail.php?api_id=N. ~139 avisos.
 tera-birnbachrealestate,Birnbach Real Estate,inmobiliaria,birnbachrealestate,https://birnbachrealestate.com,adapter,,,si,3000,1.0,si,nueva,Web TeraCRM (radar/adapters/tera.py).
 caetano,Caetano Negocios Inmobiliarios,inmobiliaria,caetano,https://caetano.com.uy,sitemap,/propiedades/[^/]+-\d+-[a-z]+$,,si,3000,1.0,si,nueva,Sitemap con ~5.200 avisos; extractor genérico.
 alda,ALDA Group,inmobiliaria,alda,https://www.alda.com.uy,sitemap,/fichapropiedad/,,si,3000,1.0,si,nueva,sitemap-fichas.xml (~1.900 fichas); extractor genérico.
